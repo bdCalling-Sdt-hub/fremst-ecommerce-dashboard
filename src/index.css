@@ -36,20 +36,25 @@
 
 /* ant design menu option */
 .ant-menu-light .ant-menu-item {
-  color: #413f3f;
+  color: white !important;
+}
+.ant-menu-light .ant-menu-submenu-title {
+  color: white !important;
 }
 .ant-menu-item:hover {
-  background-color: White !important;
-  color: black !important;
+  background: linear-gradient(to right, #464baf 50%, #292c61 100%);
+  color: white !important;
 }
 
 .ant-menu-item-selected {
-  background-color: White !important;
-  color: black !important;
-  /* margin: 0 !important;
-  padding: 0 !important; */
+  background: linear-gradient(to right, #464baf 50%, #292c61 100%);
   border-radius: 0 !important;
+  border-left: 6px solid white !important;
   width: "100%" !important;
+}
+
+.ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: white !important;
 }
 
 .ant-menu .ant-menu-item .ant-menu-item-icon + span {
@@ -57,7 +62,7 @@
 }
 
 .ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title {
-  color: #8b0000 !important;
+  color: white !important;
 }
 
 .ant-menu .ant-menu-title-content {

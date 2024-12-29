@@ -1,3 +1,4 @@
+import React from "react";
 import {
   BarChart,
   Bar,
@@ -5,51 +6,63 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 
 const data = [
   {
-    name: "Mo",
-    Sales: 4000,
-    Revenue: 2400,
+    name: "Jan",
+    TotalOrders: 4000,
   },
   {
-    name: "Tu",
-    Sales: 3000,
-    Revenue: 1398,
+    name: "Feb",
+    TotalOrders: 3000,
   },
   {
-    name: "We",
-    Sales: 6800,
-    Revenue: 3200,
+    name: "Mar",
+    TotalOrders: 2000,
   },
   {
-    name: "Th",
-    Sales: 4780,
-    Revenue: 1908,
+    name: "Apr",
+    TotalOrders: 2780,
   },
   {
-    name: "Fr",
-    Sales: 4890,
-    Revenue: 2800,
+    name: "May",
+    TotalOrders: 1890,
   },
   {
-    name: "Su",
-    Sales: 3390,
-    Revenue: 2800,
+    name: "Jun",
+    TotalOrders: 2390,
   },
   {
-    name: "St",
-    Sales: 3490,
-    Revenue: 1300,
+    name: "Jul",
+    TotalOrders: 3490,
+  },
+  {
+    name: "Aug",
+    TotalOrders: 2000,
+  },
+  {
+    name: "Sep",
+    TotalOrders: 2780,
+  },
+  {
+    name: "Oct",
+    TotalOrders: 1890,
+  },
+  {
+    name: "Nov",
+    TotalOrders: 2390,
+  },
+  {
+    name: "Dec",
+    TotalOrders: 3490,
   },
 ];
 
 const SalesTrackingChart = () => {
   return (
-    <ResponsiveContainer width="90%" height={230}>
+    <ResponsiveContainer width="100%" height={250}>
       <BarChart
         data={data}
         margin={{
@@ -58,27 +71,17 @@ const SalesTrackingChart = () => {
           left: 20,
           bottom: 5,
         }}
-        barCategoryGap="30%" // Adjust gap between bars
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
         <Tooltip />
-        <Legend />
-        {/* Thinner bars */}
         <Bar
-          dataKey="Sales"
+          dataKey="TotalOrders"
           stackId="a"
-          fill="#8b0000"
-          radius={[20, 20, 0, 0]} // Optional: rounded top corners
-          barSize={10} // Make bars thinner
-        />
-        <Bar
-          dataKey="Revenue"
-          stackId="a"
-          fill="#ffe7e7"
-          radius={[20, 20, 0, 0]} // Optional: rounded top corners
-          barSize={10} // Make bars thinner
+          fill="#292c61"
+          radius={[8, 8, 0, 0]}
+          barSize={35}
         />
       </BarChart>
     </ResponsiveContainer>

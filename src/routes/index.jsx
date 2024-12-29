@@ -73,7 +73,7 @@ const router = createBrowserRouter([
         element: <EditBanners />,
       },
       {
-        path: "/user/profile/:id",
+        path: "/company/details/:id",
         element: <User />,
       },
       {
@@ -82,7 +82,7 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/users",
+        path: "/customers",
         element: <Users />,
       },
       {

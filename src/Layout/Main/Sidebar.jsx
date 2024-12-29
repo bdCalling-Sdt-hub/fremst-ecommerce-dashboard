@@ -15,7 +15,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { PiUserPlus } from "react-icons/pi";
 import { LuLayoutDashboard } from "react-icons/lu";
 import Cookies from "js-cookie";
-import logo from "../../assets/barberMeLogo.png";
+import logo from "../../assets/logoTransBg.png";
 import { DiGoogleAnalytics } from "react-icons/di";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { FaMoneyBillTransfer, FaScissors } from "react-icons/fa6";
@@ -47,25 +47,17 @@ const Sidebar = () => {
         </Link>
       ),
     },
+
     // {
-    //   key: "/transactions",
-    //   icon: <DiGoogleAnalytics size={24} />,
-    //   label: <Link to="/transactions">Transactions</Link>,
+    //   key: "/banners",
+    //   icon: <MdFeaturedPlayList size={24} />,
+    //   label: <Link to="/banners">Banners</Link>,
     // },
+
     {
-      key: "/banners",
-      icon: <MdFeaturedPlayList size={24} />,
-      label: <Link to="/banners">Banners</Link>,
-    },
-    // {
-    //   key: "/category",
-    //   icon: <BiSolidCategoryAlt size={24} />,
-    //   label: <Link to="/category">Category</Link>,
-    // },
-    {
-      key: "/users",
+      key: "/customers",
       icon: <TbUserScreen size={24} />,
-      label: <Link to="/users">Users</Link>,
+      label: <Link to="/customers">Customers</Link>,
     },
     {
       key: "/vendors",

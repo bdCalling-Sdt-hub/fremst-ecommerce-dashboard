@@ -1,11 +1,24 @@
 import React, { useState } from "react";
-import { Table, Button, Space, Avatar } from "antd";
+import {
+  Table,
+  Button,
+  Space,
+  Input,
+  Modal,
+  Form,
+  InputNumber,
+  Upload,
+} from "antd";
 import { Link } from "react-router-dom";
-import randomImg from "../../assets/randomProfile2.jpg";
+import { UploadOutlined } from "@ant-design/icons";
+import { IoMdAdd } from "react-icons/io";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [pageSize, setPageSize] = useState(10);
+  const [searchText, setSearchText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
 
   // Dummy data for users
   const users = {
@@ -13,159 +26,183 @@ const Users = () => {
       data: [
         {
           id: "1",
-          name: "John Doe",
-          email: "john@example.com",
-          phoneNumber: "+123456789",
-          address: "123 Main St, Springfield",
-          totalServices: 12,
-          status: "VIP",
-          profileImg: "https://randomuser.me/api/portraits/men/1.jpg",
-          fine: 50,
+          company: "Company A",
+          logo: "https://via.placeholder.com/50?text=A",
+          admin: 3,
+          totalEmployee: 50,
+          totalBudget: 100000,
+          totalOrder: 120,
         },
         {
           id: "2",
-          name: "Jane Smith",
-          email: "jane@example.com",
-          phoneNumber: "+987654321",
-          address: "456 Elm St, Springfield",
-          totalServices: 5,
-          status: "Regular",
-          profileImg: "https://randomuser.me/api/portraits/women/2.jpg",
+          company: "Company B",
+          logo: "https://via.placeholder.com/50?text=B",
+          admin: 2,
+          totalEmployee: 30,
+          totalBudget: 75000,
+          totalOrder: 80,
         },
         {
           id: "3",
-          name: "Sam Wilson",
-          email: "sam@example.com",
-          phoneNumber: "+192837465",
-          address: "789 Oak St, Springfield",
-          totalServices: 3,
-          status: "New",
-          profileImg: "https://randomuser.me/api/portraits/men/3.jpg",
-          fine: 30,
+          company: "Company C",
+          logo: "https://via.placeholder.com/50?text=C",
+          admin: 1,
+          totalEmployee: 20,
+          totalBudget: 50000,
+          totalOrder: 60,
         },
         {
           id: "4",
-          name: "Emily Johnson",
-          email: "emily@example.com",
-          phoneNumber: "+456789123",
-          address: "321 Pine St, Springfield",
-          totalServices: 8,
-          status: "VIP",
-          profileImg: "https://randomuser.me/api/portraits/women/4.jpg",
-          fine: 0,
+          company: "Company D",
+          logo: "https://via.placeholder.com/50?text=D",
+          admin: 4,
+          totalEmployee: 100,
+          totalBudget: 200000,
+          totalOrder: 150,
         },
         {
           id: "5",
-          name: "Michael Brown",
-          email: "michael@example.com",
-          phoneNumber: "+789456123",
-          address: "654 Maple St, Springfield",
-          totalServices: 6,
-          status: "Regular",
-          profileImg: "https://randomuser.me/api/portraits/men/5.jpg",
+          company: "Company E",
+          logo: "https://via.placeholder.com/50?text=E",
+          admin: 2,
+          totalEmployee: 40,
+          totalBudget: 90000,
+          totalOrder: 110,
         },
         {
           id: "6",
-          name: "Sophia Davis",
-          email: "sophia@example.com",
-          phoneNumber: "+123987654",
-          address: "987 Birch St, Springfield",
-          totalServices: 7,
-          status: "New",
-          profileImg: "https://randomuser.me/api/portraits/women/6.jpg",
-          fine: 40,
+          company: "Company F",
+          logo: "https://via.placeholder.com/50?text=F",
+          admin: 3,
+          totalEmployee: 60,
+          totalBudget: 120000,
+          totalOrder: 130,
         },
         {
           id: "7",
-          name: "David Wilson",
-          email: "david@example.com",
-          phoneNumber: "+456321789",
-          address: "321 Cedar St, Springfield",
-          totalServices: 10,
-          status: "VIP",
-          profileImg: "https://randomuser.me/api/portraits/men/7.jpg",
+          company: "Company G",
+          logo: "https://via.placeholder.com/50?text=G",
+          admin: 1,
+          totalEmployee: 25,
+          totalBudget: 60000,
+          totalOrder: 70,
         },
         {
           id: "8",
-          name: "Olivia Miller",
-          email: "olivia@example.com",
-          phoneNumber: "+789123456",
-          address: "654 Walnut St, Springfield",
-          totalServices: 9,
-          status: "Regular",
-          profileImg: "https://randomuser.me/api/portraits/women/8.jpg",
+          company: "Company H",
+          logo: "https://via.placeholder.com/50?text=H",
+          admin: 2,
+          totalEmployee: 35,
+          totalBudget: 80000,
+          totalOrder: 90,
         },
         {
           id: "9",
-          name: "Liam Martinez",
-          email: "liam@example.com",
-          phoneNumber: "+123456987",
-          address: "987 Cedar St, Springfield",
-          totalServices: 4,
-          status: "New",
-          profileImg: "https://randomuser.me/api/portraits/men/9.jpg",
-          fine: 25,
+          company: "Company I",
+          logo: "https://via.placeholder.com/50?text=I",
+          admin: 4,
+          totalEmployee: 110,
+          totalBudget: 220000,
+          totalOrder: 160,
         },
         {
           id: "10",
-          name: "Ava Hernandez",
-          email: "ava@example.com",
-          phoneNumber: "+456987123",
-          address: "321 Birch St, Springfield",
-          totalServices: 11,
-          status: "VIP",
-          profileImg: "https://randomuser.me/api/portraits/women/10.jpg",
+          company: "Company J",
+          logo: "https://via.placeholder.com/50?text=J",
+          admin: 3,
+          totalEmployee: 55,
+          totalBudget: 105000,
+          totalOrder: 125,
         },
         {
           id: "11",
-          name: "James Anderson",
-          email: "james@example.com",
-          phoneNumber: "+789123789",
-          address: "654 Pine St, Springfield",
-          totalServices: 5,
-          status: "Regular",
-          profileImg: "https://randomuser.me/api/portraits/men/11.jpg",
+          company: "Company K",
+          logo: "https://via.placeholder.com/50?text=K",
+          admin: 2,
+          totalEmployee: 45,
+          totalBudget: 95000,
+          totalOrder: 115,
         },
         {
           id: "12",
-          name: "Isabella Garcia",
-          email: "isabella@example.com",
-          phoneNumber: "+123789456",
-          address: "987 Maple St, Springfield",
-          totalServices: 13,
-          status: "New",
-          profileImg: "https://randomuser.me/api/portraits/women/12.jpg",
+          company: "Company L",
+          logo: "https://via.placeholder.com/50?text=L",
+          admin: 1,
+          totalEmployee: 15,
+          totalBudget: 40000,
+          totalOrder: 50,
         },
         {
           id: "13",
-          name: "Lucas Martinez",
-          email: "lucas@example.com",
-          phoneNumber: "+456321654",
-          address: "321 Walnut St, Springfield",
-          totalServices: 6,
-          status: "VIP",
-          profileImg: "https://randomuser.me/api/portraits/men/13.jpg",
+          company: "Company M",
+          logo: "https://via.placeholder.com/50?text=M",
+          admin: 3,
+          totalEmployee: 65,
+          totalBudget: 130000,
+          totalOrder: 140,
         },
         {
           id: "14",
-          name: "Emma Harris",
-          email: "emma@example.com",
-          phoneNumber: "+789654321",
-          address: "654 Cedar St, Springfield",
-          totalServices: 7,
-          status: "Regular",
-          profileImg: "https://randomuser.me/api/portraits/women/14.jpg",
-          fine: 35,
+          company: "Company N",
+          logo: "https://via.placeholder.com/50?text=N",
+          admin: 2,
+          totalEmployee: 38,
+          totalBudget: 85000,
+          totalOrder: 95,
         },
         {
           id: "15",
-          name: "Ethan Thompson",
-          email: "ethan@example.com",
-          phoneNumber: "+123321456",
-          address: "987 Pine St, Springfield",
-          totalServices: 8,
-          status: "New",
-          profileImg: "https://randomuser.me/api/portraits/men/15.jpg",
+          company: "Company O",
+          logo: "https://via.placeholder.com/50?text=O",
+          admin: 4,
+          totalEmployee: 120,
+          totalBudget: 240000,
+          totalOrder: 170,
+        },
+        {
+          id: "16",
+          company: "Company P",
+          logo: "https://via.placeholder.com/50?text=P",
+          admin: 3,
+          totalEmployee: 58,
+          totalBudget: 110000,
+          totalOrder: 128,
+        },
+        {
+          id: "17",
+          company: "Company Q",
+          logo: "https://via.placeholder.com/50?text=Q",
+          admin: 2,
+          totalEmployee: 42,
+          totalBudget: 92000,
+          totalOrder: 112,
+        },
+        {
+          id: "18",
+          company: "Company R",
+          logo: "https://via.placeholder.com/50?text=R",
+          admin: 1,
+          totalEmployee: 18,
+          totalBudget: 45000,
+          totalOrder: 55,
+        },
+        {
+          id: "19",
+          company: "Company S",
+          logo: "https://via.placeholder.com/50?text=S",
+          admin: 3,
+          totalEmployee: 68,
+          totalBudget: 135000,
+          totalOrder: 145,
+        },
+        {
+          id: "20",
+          company: "Company T",
+          logo: "https://via.placeholder.com/50?text=T",
+          admin: 2,
+          totalEmployee: 36,
+          totalBudget: 82000,
+          totalOrder: 92,
         },
       ],
     },
@@ -178,6 +215,35 @@ const Users = () => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleAddCustomer = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    form.validateFields().then((values) => {
+      form.resetFields();
+      setIsModalVisible(false);
+      // Add the new customer to the data
+      const newCustomer = {
+        id: (data.length + 1).toString(),
+        ...values,
+      };
+      users.data.data.push(newCustomer);
+    });
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const filteredData = data.filter((item) =>
+    item.company.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   const columns = [
     {
       title: "Id",
@@ -185,91 +251,53 @@ const Users = () => {
       key: "id",
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => {
-        const name = record.name || "Unknown";
-        const imgUrl = record.profileImg || randomImg;
-        const fullImgUrl = imgUrl.startsWith("http")
-          ? imgUrl
-          : `${import.meta.env.VITE_BASE_URL}${imgUrl}`;
-
-        return (
-          <Space>
-            <Avatar src={fullImgUrl} alt={name} size="large" />
-            <span>{name}</span>
-          </Space>
-        );
-      },
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      render: (text, record) => (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={record.logo}
+            alt={record.company}
+            style={{ width: 50, height: 50, marginRight: 10 }}
+          />
+          <span>{record.company}</span>
+        </div>
+      ),
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Admin",
+      dataIndex: "admin",
+      key: "admin",
     },
     {
-      title: "Phone Number",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
+      title: "Total Employee",
+      dataIndex: "totalEmployee",
+      key: "totalEmployee",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Total Budget",
+      dataIndex: "totalBudget",
+      key: "totalBudget",
+      render: (budget) => `$${budget.toLocaleString()}`,
+      sorter: (a, b) => a.totalBudget - b.totalBudget,
     },
     {
-      title: "Activity",
-      dataIndex: "totalServices",
-      key: "totalServices",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => {
-        let color;
-        switch (status) {
-          case "VIP":
-            color = "orange";
-            break;
-          case "Regular":
-            color = "blue";
-            break;
-          case "New":
-            color = "green";
-            break;
-          default:
-            color = "green";
-        }
-
-        return <span style={{ color }}>{status}</span>;
-      },
-    },
-    {
-      title: "Fine",
-      dataIndex: "fine",
-      key: "fine",
-      render: (fine) =>
-        fine ? (
-          <span style={{ color: "red" }}>${fine}</span>
-        ) : (
-          <span className="text-green-700">No Fine</span>
-        ),
+      title: "Total Order",
+      dataIndex: "totalOrder",
+      key: "totalOrder",
+      sorter: (a, b) => a.totalOrder - b.totalOrder,
     },
     {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
         <Space>
-          <Link to={`/user/profile/${record.id}`}>
+          <Link to={`/company/details/${record.id}`}>
             <Button className="bg-[#FFF4E3] text-[#F3B806] border-none">
-              Details
+              View Details
             </Button>
           </Link>
-          <Button className="border border-red-600 text-red-700">
-            Restrict
-          </Button>
         </Space>
       ),
     },
@@ -277,13 +305,125 @@ const Users = () => {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold  my-5">Users</h1>
+      <h1 className="text-2xl font-semibold my-5">Customers</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
+        <Input
+          placeholder="Search by company name"
+          value={searchText}
+          onChange={handleSearch}
+          style={{ width: 200, height: 40 }}
+        />
+        <Button
+          className="py-5 bg-primary text-white"
+          onClick={handleAddCustomer}
+        >
+          <IoMdAdd size={24} /> Add Customer
+        </Button>
+      </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={filteredData}
         pagination={{ pageSize, onChange: () => setPageSize() }}
         scroll={{ x: 1000 }}
       />
+      <Modal
+        title="Add Customer"
+        open={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        className="border-t-8 rounded-t-2xl border-primary"
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="company"
+            label="Company Name"
+            rules={[
+              { required: true, message: "Please input the company name!" },
+            ]}
+          >
+            <Input placeholder="Enter company name" className="bg-gray-50" />
+          </Form.Item>
+          <Form.Item
+            name="email"
+            label="Company Email"
+            rules={[
+              { required: true, message: "Please input the company email!" },
+            ]}
+          >
+            <Input placeholder="Enter company email" className="bg-gray-50" />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            label="Company Phone Number"
+            rules={[
+              {
+                required: true,
+                message: "Please input the company phone number!",
+              },
+            ]}
+          >
+            <Input
+              placeholder="Enter company phone number"
+              className="bg-gray-50"
+            />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label="Company Address"
+            rules={[
+              { required: true, message: "Please input the company address!" },
+            ]}
+          >
+            <Input.TextArea
+              placeholder="Enter company address"
+              className="bg-gray-50"
+            />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: "Please input the password!" }]}
+          >
+            <Input.Password
+              placeholder="Enter password"
+              className="bg-gray-50"
+            />
+          </Form.Item>
+          <Form.Item
+            name="logo"
+            label="Company Logo"
+            rules={[
+              { required: true, message: "Please upload the company logo!" },
+            ]}
+            style={{ width: "100%" }}
+          >
+            <Upload
+              name="logo"
+              listType="picture"
+              maxCount={1}
+              beforeUpload={() => false} // Prevent automatic upload
+            >
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <Button icon={<UploadOutlined />}>Upload Logo</Button>
+              </div>
+            </Upload>
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 };
