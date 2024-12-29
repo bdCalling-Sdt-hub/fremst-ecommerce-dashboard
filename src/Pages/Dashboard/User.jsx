@@ -165,7 +165,7 @@ const User = () => {
       key: "actions",
       render: (text, record) => (
         <Space>
-          <Link to={`/employee/details/${record.name}`}>
+          <Link to={`/employee/details/${record.id}`}>
             <Button className="bg-[#FFF4E3] text-[#F3B806] border-none">
               View Details
             </Button>

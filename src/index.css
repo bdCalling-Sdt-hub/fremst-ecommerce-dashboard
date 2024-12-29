@@ -10,6 +10,13 @@
   margin: 0;
 }
 
+.heading {
+  font-family: "Big Shoulders Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
 /* ant design modal footer top margin remove */
 .ant-modal-footer {
   margin-top: 0 !important;

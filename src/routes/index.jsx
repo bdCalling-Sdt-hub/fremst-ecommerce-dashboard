@@ -41,6 +41,7 @@ import Services from "../Pages/Dashboard/Salon/Services";
 import Category from "../Pages/Dashboard/Salon/Category";
 import SubCategory from "../Pages/Dashboard/Salon/SubCategory";
 import Vendor from "../Pages/Dashboard/Vendor";
+import EmployeeProfile from "../Pages/Dashboard/EmployeeProfile";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       {
         path: "/company/details/:id",
         element: <User />,
+      },
+      {
+        path: "/employee/details/:id",
+        element: <EmployeeProfile />,
       },
       {
         path: "/barber/profile/:id",
