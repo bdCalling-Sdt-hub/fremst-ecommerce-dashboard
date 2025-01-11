@@ -1,49 +1,81 @@
-import React from "react";
-import { Table, Button } from "antd";
+import React, { useState } from "react";
+import { Table, Button, Input, Select, Space } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+
+const { Option } = Select;
 
 const dummyData = [
   {
     key: "1",
-    orderId: "ORD001",
+    id: "ORD001",
+    productName: "Product A",
     customerName: "Alice Brown",
-    serviceName: "Haircut",
-    barberName: "John Doe",
-    price: "$50",
+    items: 3,
+    cost: 150,
     status: "In Progress",
-    appointmentTime: "2024-12-18 10:00 AM",
-    paymentMethod: "Credit Card",
-    customerContact: "+123456789",
-    barberContact: "+987654321",
-    notes: "Customer prefers a side part.",
-    duration: "45 mins",
-    earnings: "$7.50",
+    date: "2024-12-18",
   },
   {
     key: "2",
-    orderId: "ORD003",
+    id: "ORD002",
+    productName: "Product B",
+    customerName: "Bob Smith",
+    items: 1,
+    cost: 50,
+    status: "Completed",
+    date: "2024-12-19",
+  },
+  {
+    key: "3",
+    id: "ORD003",
+    productName: "Product C",
     customerName: "Charlie Green",
-    serviceName: "Facial",
-    barberName: "Bob Johnson",
-    price: "$40",
+    items: 2,
+    cost: 100,
     status: "Pending",
-    appointmentTime: "2024-12-19 02:00 PM",
-    paymentMethod: "Online Payment",
-    customerContact: "+123456781",
-    barberContact: "+987654322",
-    notes: "Client prefers organic products.",
-    duration: "30 mins",
-    earnings: "$6.00",
+    date: "2024-12-20",
+  },
+  {
+    key: "4",
+    id: "ORD004",
+    productName: "Product D",
+    customerName: "Diana White",
+    items: 5,
+    cost: 250,
+    status: "Cancelled",
+    date: "2024-12-21",
   },
   // Additional dummy data...
 ];
 
 const RunningOrders = () => {
+  const [searchText, setSearchText] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  const handleStatusFilterChange = (value) => {
+    setStatusFilter(value);
+  };
+
+  const filteredData = dummyData.filter(
+    (item) =>
+      item.productName.toLowerCase().includes(searchText.toLowerCase()) &&
+      (statusFilter ? item.status === statusFilter : true)
+  );
+
   const columns = [
     {
-      title: "Order ID",
-      dataIndex: "orderId",
-      key: "orderId",
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Product Name",
+      dataIndex: "productName",
+      key: "productName",
     },
     {
       title: "Customer Name",
@@ -51,39 +83,17 @@ const RunningOrders = () => {
       key: "customerName",
     },
     {
-      title: "Service Name",
-      dataIndex: "serviceName",
-      key: "serviceName",
+      title: "Items",
+      dataIndex: "items",
+      key: "items",
+      sorter: (a, b) => a.items - b.items,
     },
     {
-      title: "Barber Name",
-      dataIndex: "barberName",
-      key: "barberName",
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-    },
-    {
-      title: "Appointment Time",
-      dataIndex: "appointmentTime",
-      key: "appointmentTime",
-    },
-    {
-      title: "Notes/Comments",
-      dataIndex: "notes",
-      key: "notes",
-    },
-    {
-      title: "Duration",
-      dataIndex: "duration",
-      key: "duration",
-    },
-    {
-      title: "Earnings",
-      dataIndex: "earnings",
-      key: "earnings",
+      title: "Cost",
+      dataIndex: "cost",
+      key: "cost",
+      render: (cost) => `$${cost}`,
+      sorter: (a, b) => a.cost - b.cost,
     },
     {
       title: "Status",
@@ -94,12 +104,21 @@ const RunningOrders = () => {
           className={`px-2 py-1 text-xs rounded-full ${
             status === "In Progress"
               ? "bg-orange-200 text-orange-600"
+              : status === "Completed"
+              ? "bg-green-200 text-green-600"
+              : status === "Pending"
+              ? "bg-yellow-200 text-yellow-600"
               : "bg-red-200 text-red-800"
           }`}
         >
           {status}
         </span>
       ),
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
     },
     {
       title: "Actions",
@@ -123,8 +142,35 @@ const RunningOrders = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-semibold  my-5">Orders</h1>
-      <Table columns={columns} dataSource={dummyData} rowKey="key" />
+      <h1 className="text-3xl heading my-5">Order History</h1>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
+        <Space>
+          <Input
+            placeholder="Search"
+            value={searchText}
+            onChange={handleSearch}
+            style={{ width: 400, height: 40 }}
+          />
+          <Select
+            placeholder="Filter by status"
+            onChange={handleStatusFilterChange}
+            style={{ width: 200, height: 40 }}
+            allowClear
+          >
+            <Option value="In Progress">In Progress</Option>
+            <Option value="Completed">Completed</Option>
+            <Option value="Pending">Pending</Option>
+            <Option value="Cancelled">Cancelled</Option>
+          </Select>
+        </Space>
+      </div>
+      <Table columns={columns} dataSource={filteredData} rowKey="key" />
     </div>
   );
 };

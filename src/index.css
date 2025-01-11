@@ -77,9 +77,9 @@
 }
 
 .ant-badge .ant-badge-count {
-  background: #ffe7e7 !important;
+  background: #ced1ff !important;
   color: black !important;
-  border: 1px solid #ffc7c7 !important;
+  border: 1px solid #292c61 !important;
 }
 
 .jodit-workplace {
@@ -105,15 +105,15 @@
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #8b0000;
+  background: #292c61;
 }
 
 /* pagination style */
 .ant-pagination-item-active a {
   color: white !important;
-  background-color: #8b0000 !important;
+  background-color: #292c61 !important;
 }
 
 .ant-switch-checked {
-  background-color: #8b0000 !important;
+  background-color: #292c61 !important;
 }

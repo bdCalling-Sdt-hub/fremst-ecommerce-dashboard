@@ -29,7 +29,7 @@ const Login = () => {
         // Cookies.set("refreshToken", refreshToken);
       }
 
-      navigate("/");
+      navigate("/customers");
       toast.success("Login successful!");
     } catch (error) {
       toast.error(error || "An error occurred", {

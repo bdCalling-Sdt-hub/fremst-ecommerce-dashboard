@@ -9,8 +9,9 @@ import { TbShoppingCartCheck } from "react-icons/tb";
 import { RiMoneyCnyCircleLine } from "react-icons/ri";
 import { GiMoneyStack } from "react-icons/gi";
 import SalesTrackingChart from "../../components/ui/Home/SalesTrackingChart";
+import CompanySalesTrackingChart from "./CompanySalesAndTrackingChart";
 
-const User = () => {
+const Overview = () => {
   const { id } = useParams();
   const [searchText, setSearchText] = useState("");
 
@@ -232,7 +233,7 @@ const User = () => {
           </div>
           <div className="bg-white p-5 my-5 rounded-xl shadow-lg">
             <h1 className="text-2xl font-bold ms-7 my-1">Total Orders</h1>
-            <SalesTrackingChart />
+            <CompanySalesTrackingChart />
           </div>
         </div>
       </div>
@@ -254,4 +255,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Overview;

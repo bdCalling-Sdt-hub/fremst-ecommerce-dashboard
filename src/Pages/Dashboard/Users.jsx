@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { IoMdAdd } from "react-icons/io";
+import { FaEye } from "react-icons/fa6";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -294,8 +295,8 @@ const Users = () => {
       render: (text, record) => (
         <Space>
           <Link to={`/company/details/${record.id}`}>
-            <Button className="bg-[#FFF4E3] text-[#F3B806] border-none">
-              View Details
+            <Button className="bg-[#e9b006] text-white border-none">
+              <FaEye size={24} />
             </Button>
           </Link>
         </Space>

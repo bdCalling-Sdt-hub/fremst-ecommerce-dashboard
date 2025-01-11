@@ -1,25 +1,22 @@
 import { Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import {
+  MdAddShoppingCart,
   MdCancelPresentation,
   MdCategory,
   MdFeaturedPlayList,
-  MdMiscellaneousServices,
+  MdOutlineAddBox,
 } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import { TbUserScreen } from "react-icons/tb";
 import { IoIosLogOut } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
-
-import { PiUserPlus } from "react-icons/pi";
-import { LuLayoutDashboard } from "react-icons/lu";
 import Cookies from "js-cookie";
 import logo from "../../assets/logoTransBg.png";
-import { DiGoogleAnalytics } from "react-icons/di";
-import { BiSolidCategoryAlt } from "react-icons/bi";
-import { FaMoneyBillTransfer, FaScissors } from "react-icons/fa6";
-import { FaBorderStyle } from "react-icons/fa";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { FaBorderStyle, FaThList } from "react-icons/fa";
+import { AiFillProduct } from "react-icons/ai";
+import { BsDatabaseFillAdd } from "react-icons/bs";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -38,15 +35,15 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    {
-      key: "/",
-      icon: <LuLayoutDashboard size={24} />,
-      label: (
-        <Link to="/" className="">
-          Dashboard
-        </Link>
-      ),
-    },
+    // {
+    //   key: "/",
+    //   icon: <LuLayoutDashboard size={24} />,
+    //   label: (
+    //     <Link to="/" className="">
+    //       Dashboard
+    //     </Link>
+    //   ),
+    // },
 
     // {
     //   key: "/banners",
@@ -55,44 +52,35 @@ const Sidebar = () => {
     // },
 
     {
-      key: "/customers",
+      key: "/users",
       icon: <TbUserScreen size={24} />,
-      label: <Link to="/customers">Customers</Link>,
+      label: <Link to="/users">Customers</Link>,
     },
+    // {
+    //   key: "/vendors",
+    //   icon: <PiUserPlus size={24} />,
+    //   label: <Link to="/vendors">Barbers</Link>,
+    // },
     {
-      key: "/vendors",
-      icon: <PiUserPlus size={24} />,
-      label: <Link to="/vendors">Barbers</Link>,
-    },
-    {
-      key: "subMenuSalon",
-      icon: <FaScissors size={24} />,
-      label: "Salon",
+      key: "productMenu",
+      icon: <AiFillProduct size={24} />,
+      label: "Product",
       children: [
         {
-          key: "/services",
-          icon: <MdMiscellaneousServices size={24} />,
+          key: "/productList",
+          icon: <FaThList size={24} />,
           label: (
-            <Link to="/services" className="text-white hover:text-white">
-              Services
+            <Link to="/productList" className="text-white hover:text-white">
+              Product List
             </Link>
           ),
         },
         {
-          key: "/salon-category",
-          icon: <BiSolidCategoryAlt size={24} />,
+          key: "/addProduct",
+          icon: <MdAddShoppingCart size={24} />,
           label: (
-            <Link to="/salon-category" className="text-white hover:text-white">
-              Category
-            </Link>
-          ),
-        },
-        {
-          key: "/sub-category",
-          icon: <MdCategory size={24} />,
-          label: (
-            <Link to="/sub-category" className="text-white hover:text-white">
-              Sub Category
+            <Link to="/addProduct" className="text-white hover:text-white">
+              Add Product
             </Link>
           ),
         },
@@ -104,15 +92,40 @@ const Sidebar = () => {
       label: <Link to="/orders">Orders</Link>,
     },
     {
-      key: "/cancellation",
-      icon: <MdCancelPresentation size={24} />,
-      label: <Link to="/cancellation">Cancellation</Link>,
+      key: "categoryMenu",
+      icon: <MdCategory size={24} />,
+      label: "Category",
+      children: [
+        {
+          key: "/addCategory",
+          icon: <MdOutlineAddBox size={24} />,
+          label: (
+            <Link to="/addCategory" className="text-white hover:text-white">
+              Add Category
+            </Link>
+          ),
+        },
+        {
+          key: "/addSubCategory",
+          icon: <BsDatabaseFillAdd size={24} />,
+          label: (
+            <Link to="/addSubCategory" className="text-white hover:text-white">
+              Add Sub Category
+            </Link>
+          ),
+        },
+      ],
     },
-    {
-      key: "/our-transactions",
-      icon: <FaMoneyBillTransfer size={24} />,
-      label: <Link to="/our-transactions">Transactions</Link>,
-    },
+    // {
+    //   key: "/cancellation",
+    //   icon: <MdCancelPresentation size={24} />,
+    //   label: <Link to="/cancellation">Cancellation</Link>,
+    // },
+    // {
+    //   key: "/our-transactions",
+    //   icon: <FaMoneyBillTransfer size={24} />,
+    //   label: <Link to="/our-transactions">Transactions</Link>,
+    // },
 
     {
       key: "subMenuSetting",
@@ -131,6 +144,14 @@ const Sidebar = () => {
           ),
         },
         {
+          key: "/addAdmin",
+          label: (
+            <Link to="/addAdmin" className="text-white hover:text-white">
+              Admin Management
+            </Link>
+          ),
+        },
+        {
           key: "/change-password",
           label: (
             <Link to="/change-password" className="text-white hover:text-white">
@@ -138,22 +159,22 @@ const Sidebar = () => {
             </Link>
           ),
         },
-        {
-          key: "/offer-list",
-          label: (
-            <Link to="/offer-list" className="text-white hover:text-white">
-              Offer List
-            </Link>
-          ),
-        },
-        {
-          key: "/about-us",
-          label: (
-            <Link to="/about-us" className="text-white hover:text-white">
-              About Us
-            </Link>
-          ),
-        },
+        // {
+        //   key: "/offer-list",
+        //   label: (
+        //     <Link to="/offer-list" className="text-white hover:text-white">
+        //       Offer List
+        //     </Link>
+        //   ),
+        // },
+        // {
+        //   key: "/about-us",
+        //   label: (
+        //     <Link to="/about-us" className="text-white hover:text-white">
+        //       About Us
+        //     </Link>
+        //   ),
+        // },
         {
           key: "/terms-and-condition",
           label: (
@@ -182,6 +203,11 @@ const Sidebar = () => {
           ),
         },
       ],
+    },
+    {
+      key: "/overview",
+      icon: <MdFeaturedPlayList size={24} />,
+      label: <Link to="/overview">Overview</Link>,
     },
     {
       key: "/logout",

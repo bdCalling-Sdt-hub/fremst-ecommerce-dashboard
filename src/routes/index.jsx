@@ -42,6 +42,11 @@ import Category from "../Pages/Dashboard/Salon/Category";
 import SubCategory from "../Pages/Dashboard/Salon/SubCategory";
 import Vendor from "../Pages/Dashboard/Vendor";
 import EmployeeProfile from "../Pages/Dashboard/EmployeeProfile";
+import AddProduct from "../Pages/Dashboard/Product/AddProduct";
+import ProductList from "../Pages/Dashboard/Product/ProductList";
+import AddCategory from "../Pages/Dashboard/category/AddCategory";
+import AddSubCategory from "../Pages/Dashboard/category/AddSubCategory";
+import Overview from "../Pages/CompanyDashboard/Overview";
 
 const router = createBrowserRouter([
   {
@@ -78,6 +83,10 @@ const router = createBrowserRouter([
         element: <User />,
       },
       {
+        path: "/users",
+        element: <Users />,
+      },
+      {
         path: "/employee/details/:id",
         element: <EmployeeProfile />,
       },
@@ -87,16 +96,29 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/customers",
-        element: <Users />,
+        path: "/addSubCategory",
+        element: <AddSubCategory />,
       },
+      {
+        path: "/addCategory",
+        element: <AddCategory />,
+      },
+
       {
         path: "/vendors",
         element: <Vendors />,
       },
       {
+        path: "/addAdmin",
+        element: <Admin />,
+      },
+      {
         path: "/services",
         element: <Services />,
+      },
+      {
+        path: "/overview",
+        element: <Overview />,
       },
       {
         path: "/salon-category",
@@ -105,6 +127,14 @@ const router = createBrowserRouter([
       {
         path: "/sub-category",
         element: <SubCategory />,
+      },
+      {
+        path: "/addProduct",
+        element: <AddProduct />,
+      },
+      {
+        path: "/productList",
+        element: <ProductList />,
       },
       {
         path: "/our-transactions",
