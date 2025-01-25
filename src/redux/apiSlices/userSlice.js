@@ -10,13 +10,14 @@ const userSlice = api.injectEndpoints({
         };
       },
     }),
-    users: builder.query({
+    getAllCompanies: builder.query({
       query: () => {
         return {
           method: "GET",
-          url: "/user",
+          url: "/admin/companies",
         };
       },
+      providesTags: ["Company"],
     }),
     vendors: builder.query({
       query: () => {
@@ -39,7 +40,7 @@ const userSlice = api.injectEndpoints({
 
 export const {
   useAdminQuery,
-  useUsersQuery,
+  useGetAllCompaniesQuery,
   useVendorsQuery,
   useUserByIdQuery,
 } = userSlice;

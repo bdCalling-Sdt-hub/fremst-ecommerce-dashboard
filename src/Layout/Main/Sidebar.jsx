@@ -13,7 +13,6 @@ import { IoIosLogOut } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import Cookies from "js-cookie";
 import logo from "../../assets/logoTransBg.png";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { FaBorderStyle, FaThList } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
 import { BsDatabaseFillAdd } from "react-icons/bs";
@@ -28,8 +27,10 @@ const Sidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
     sessionStorage.removeItem("authToken");
     sessionStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("role");
     Cookies.remove("refreshToken");
     navigate("/auth/login");
   };
@@ -244,13 +245,8 @@ const Sidebar = () => {
 
   return (
     <div className="mt-5 overflow-y-scroll">
-      <div className="px-10">
-        <Link
-          to={"/"}
-          className="mb-10 flex items-center flex-col gap-2 justify-center py-4"
-        >
-          <img src={logo} alt="" />
-        </Link>
+      <div className="px-10 mb-10 flex items-center flex-col gap-2 justify-center py-4">
+        <img src={logo} alt="" />
       </div>
       <Menu
         mode="inline"

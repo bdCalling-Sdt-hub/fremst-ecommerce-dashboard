@@ -59,40 +59,16 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/transactions",
-        element: <Transactions />,
-      },
-      {
-        path: "/add-banner",
-        element: <AddBanners />,
-      },
-      {
-        path: "/banners",
-        element: <Banners />,
-      },
-      {
-        path: "/update-banner/:id",
-        element: <EditBanners />,
+        path: "/users",
+        element: <Users />,
       },
       {
         path: "/company/details/:id",
         element: <User />,
       },
       {
-        path: "/users",
-        element: <Users />,
-      },
-      {
         path: "/employee/details/:id",
         element: <EmployeeProfile />,
-      },
-      {
-        path: "/barber/profile/:id",
-        element: <Vendor />,
       },
 
       {
@@ -105,29 +81,15 @@ const router = createBrowserRouter([
       },
 
       {
-        path: "/vendors",
-        element: <Vendors />,
-      },
-      {
         path: "/addAdmin",
         element: <Admin />,
       },
-      {
-        path: "/services",
-        element: <Services />,
-      },
+
       {
         path: "/overview",
         element: <Overview />,
       },
-      {
-        path: "/salon-category",
-        element: <Category />,
-      },
-      {
-        path: "/sub-category",
-        element: <SubCategory />,
-      },
+
       {
         path: "/addProduct",
         element: <AddProduct />,
@@ -136,15 +98,7 @@ const router = createBrowserRouter([
         path: "/productList",
         element: <ProductList />,
       },
-      {
-        path: "/our-transactions",
-        element: <OurTransactions />,
-      },
 
-      // {
-      //   path: "/promotion",
-      //   element: <Promotion />,
-      // },
       {
         path: "/personal-information",
         element: <UserProfile />,
@@ -165,10 +119,7 @@ const router = createBrowserRouter([
         path: "about-us",
         element: <AboutUs />,
       },
-      {
-        path: "offer-list",
-        element: <OfferList />,
-      },
+
       {
         path: "orders",
         element: <Orders />,
@@ -178,11 +129,6 @@ const router = createBrowserRouter([
         element: <Admin />,
       },
 
-      // {
-      //   path: "/subscription",
-      //   element: <Subscription />,
-      // },
-
       {
         path: "/privacy-policy",
         element: <PrivacyPolicy />,
@@ -191,14 +137,6 @@ const router = createBrowserRouter([
         path: "/terms-and-condition",
         element: <TermsAndCondition />,
       },
-      // {
-      //   path: "/edit-terms-and-conditions",
-      //   element: <TermsAndCondition />,
-      // },
-      // {
-      //   path: "/press",
-      //   element: <Press />,
-      // },
 
       {
         path: "/change-password",

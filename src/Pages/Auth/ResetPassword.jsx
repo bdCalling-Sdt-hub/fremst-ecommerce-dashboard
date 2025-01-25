@@ -2,29 +2,30 @@ import { Button, Form, Input, message } from "antd";
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useResetPasswordMutation } from "../../redux/apiSlices/authSlice";
+import toast from "react-hot-toast";
 
 const ResetPassword = () => {
   const location = useLocation();
   const email = new URLSearchParams(location.search).get("email"); // Get email from query params
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   // const [changePassword] = useChangePasswordMutation(); // Destructure mutation with loading state
-  const [resetPassword] = useResetPasswordMutation(); // Destructure mutation with loading state
+  const [resetPassword] = useResetPasswordMutation();
 
   const onFinish = async (values) => {
     console.log({ email, ...values });
-    const data = { email, ...values }; // Combine email and new password values into an object
+    const data = { email, ...values };
 
     try {
       const response = await resetPassword(data).unwrap();
       console.log(response);
       if (response?.success) {
-        message.success("Password updated successfully!");
+        toast.success("Password updated successfully!");
         navigate(`/auth/login`);
       } else {
-        message.error(response?.message || "Failed to update password.");
+        toast.error(response?.message || "Failed to update password.");
       }
     } catch (error) {
-      message.error(
+      toast.error(
         error?.data?.message || "An error occurred. Please try again."
       );
     }
@@ -107,7 +108,7 @@ const ResetPassword = () => {
               height: 45,
               fontWeight: "400px",
               fontSize: "18px",
-              background: "#8b0000",
+              background: "#292c61",
               marginTop: 20,
               borderRadius: "8px",
               color: "white",

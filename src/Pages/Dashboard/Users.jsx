@@ -8,11 +8,13 @@ import {
   Form,
   InputNumber,
   Upload,
+  Tooltip,
 } from "antd";
 import { Link } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { IoMdAdd } from "react-icons/io";
 import { FaEye } from "react-icons/fa6";
+import { useGetAllCompaniesQuery } from "../../redux/apiSlices/userSlice";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -20,6 +22,15 @@ const Users = () => {
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+
+  const { data: allCompanies, isFetching } = useGetAllCompaniesQuery();
+  if (isFetching) {
+    <div>Loading...</div>;
+  }
+
+  const companies = allCompanies?.data?.data;
+
+  console.log(companies);
 
   // Dummy data for users
   const users = {
@@ -248,8 +259,13 @@ const Users = () => {
   const columns = [
     {
       title: "Id",
-      dataIndex: "id",
+      dataIndex: "_id",
       key: "id",
+      render: (text) => (
+        <p>
+          <Tooltip title={text}>{text.slice(0, 8) + "..."}</Tooltip>
+        </p>
+      ),
     },
     {
       title: "Company",
@@ -258,11 +274,16 @@ const Users = () => {
       render: (text, record) => (
         <div style={{ display: "flex", alignItems: "center" }}>
           <img
-            src={record.logo}
+            className="object-cover rounded-md"
+            src={
+              record?.user?.profile?.startsWith("https")
+                ? record?.user?.profile
+                : `${import.meta.env.VITE_BASE_URL}${record?.user?.profile}`
+            }
             alt={record.company}
             style={{ width: 50, height: 50, marginRight: 10 }}
           />
-          <span>{record.company}</span>
+          <span>{record?.user?.name}</span>
         </div>
       ),
     },
@@ -329,7 +350,7 @@ const Users = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={filteredData}
+        dataSource={companies}
         pagination={{ pageSize, onChange: () => setPageSize() }}
         scroll={{ x: 1000 }}
       />

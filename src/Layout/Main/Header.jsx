@@ -22,7 +22,7 @@ const Header = () => {
   return (
     <div className="flex items-center justify-end gap-7 h-full">
       {/* Language Selector */}
-      <Select
+      {/* <Select
         defaultValue={"en"} // Use the current language
         style={{ width: 120, height: "50px" }}
         onChange={handleSelectLanguage}
@@ -51,7 +51,7 @@ const Header = () => {
             Swedish
           </div>
         </Option>
-      </Select>
+      </Select> */}
 
       <div>
         <Badge count={5}>
@@ -59,11 +59,10 @@ const Header = () => {
         </Badge>
       </div>
       {/* Profile Section */}
-      <Link
-        to="/settings"
+      <div
         style={{
           height: "55px",
-          cursor: "pointer",
+
           borderRadius: "5px",
           display: "flex",
           alignItems: "center",
@@ -88,7 +87,7 @@ const Header = () => {
           </h2>
           <p className="text-sm">Super Admin</p>
         </div>
-      </Link>
+      </div>
     </div>
   );
 };
