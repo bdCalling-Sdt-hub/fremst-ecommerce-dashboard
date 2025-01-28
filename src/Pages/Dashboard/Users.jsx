@@ -220,7 +220,7 @@ const Users = () => {
     },
   };
 
-  const data = users?.data?.data;
+  // const data = users?.data?.data;
 
   const onSelectChange = (newSelectedRowKeys) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -236,25 +236,25 @@ const Users = () => {
   };
 
   const handleOk = () => {
-    form.validateFields().then((values) => {
-      form.resetFields();
-      setIsModalVisible(false);
-      // Add the new customer to the data
-      const newCustomer = {
-        id: (data.length + 1).toString(),
-        ...values,
-      };
-      users.data.data.push(newCustomer);
-    });
+    // form.validateFields().then((values) => {
+    //   form.resetFields();
+    //   setIsModalVisible(false);
+    //   // Add the new customer to the data
+    //   const newCustomer = {
+    //     id: (data.length + 1).toString(),
+    //     ...values,
+    //   };
+    //   users.data.data.push(newCustomer);
+    // });
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
-  const filteredData = data.filter((item) =>
-    item.company.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // const filteredData = data.filter((item) =>
+  //   item.company.toLowerCase().includes(searchText.toLowerCase())
+  // );
 
   const columns = [
     {
@@ -287,35 +287,34 @@ const Users = () => {
         </div>
       ),
     },
-    {
-      title: "Admin",
-      dataIndex: "admin",
-      key: "admin",
-    },
+
     {
       title: "Total Employee",
-      dataIndex: "totalEmployee",
-      key: "totalEmployee",
+      dataIndex: "totalEmployees",
+      key: "totalEmployees",
     },
     {
       title: "Total Budget",
       dataIndex: "totalBudget",
       key: "totalBudget",
-      render: (budget) => `$${budget.toLocaleString()}`,
-      sorter: (a, b) => a.totalBudget - b.totalBudget,
     },
     {
       title: "Total Order",
-      dataIndex: "totalOrder",
-      key: "totalOrder",
-      sorter: (a, b) => a.totalOrder - b.totalOrder,
+      dataIndex: "totalOrders",
+      key: "totalOrders",
+    },
+    {
+      title: "Total Spent Budget",
+      dataIndex: "totalSpentBudget",
+      key: "totalSpentBudget",
+      render: (text) => <p>${text}</p>,
     },
     {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
         <Space>
-          <Link to={`/company/details/${record.id}`}>
+          <Link to={`/company/details/${record._id}`}>
             <Button className="bg-[#e9b006] text-white border-none">
               <FaEye size={24} />
             </Button>
@@ -350,6 +349,7 @@ const Users = () => {
       </div>
       <Table
         columns={columns}
+        rowKey="_id"
         dataSource={companies}
         pagination={{ pageSize, onChange: () => setPageSize() }}
         scroll={{ x: 1000 }}

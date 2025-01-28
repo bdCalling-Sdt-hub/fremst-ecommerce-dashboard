@@ -19,21 +19,14 @@ const userSlice = api.injectEndpoints({
       },
       providesTags: ["Company"],
     }),
-    vendors: builder.query({
-      query: () => {
-        return {
-          method: "GET",
-          url: "/user?role=VENDOR",
-        };
-      },
-    }),
-    userById: builder.query({
+    getCompanyById: builder.query({
       query: (id) => {
         return {
           method: "GET",
-          url: `/user/profile/${id}`,
+          url: `/admin/company/${id}`,
         };
       },
+      providesTags: ["Company"],
     }),
   }),
 });
@@ -41,6 +34,5 @@ const userSlice = api.injectEndpoints({
 export const {
   useAdminQuery,
   useGetAllCompaniesQuery,
-  useVendorsQuery,
-  useUserByIdQuery,
+  useGetCompanyByIdQuery,
 } = userSlice;

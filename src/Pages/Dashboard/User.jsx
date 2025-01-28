@@ -9,10 +9,20 @@ import { TbShoppingCartCheck } from "react-icons/tb";
 import { RiMoneyCnyCircleLine } from "react-icons/ri";
 import { GiMoneyStack } from "react-icons/gi";
 import SalesTrackingChart from "../../components/ui/Home/SalesTrackingChart";
+import { useGetCompanyByIdQuery } from "../../redux/apiSlices/userSlice";
 
 const User = () => {
   const { id } = useParams();
   const [searchText, setSearchText] = useState("");
+
+  const { data: companyById, isFetching } = useGetCompanyByIdQuery(id);
+
+  if (isFetching) {
+    return <div>Loading...</div>;
+  }
+
+  const companyData = companyById?.data;
+  console.log(companyData);
 
   // Sample company data
   const company = {
@@ -117,7 +127,7 @@ const User = () => {
   };
 
   const imgUrl =
-    company?.imgUrl ||
+    companyData?.user?.profile ||
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmtj40PvvTQ1g64pgKZ2oKEk-tqT9rA4CXSA&s";
 
   const handleSearch = (e) => {
@@ -182,17 +192,21 @@ const User = () => {
           <div className="p-5 rounded-xl shadow-md bg-white">
             <img
               className="w-80 h-80 mx-auto rounded-xl object-cover"
-              src={company?.imgUrl}
+              src={
+                imgUrl?.startsWith("http")
+                  ? imgUrl
+                  : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
+              }
               alt=""
             />
           </div>
           <div className="p-4 bg-white shadow-md rounded-lg flex flex-col gap-3">
-            <h1 className="text-3xl font-bold">{company?.name}</h1>
+            <h1 className="text-3xl font-bold">{companyData?.user?.name}</h1>
             <p className="text-gray-600 text-lg flex items-center gap-2">
-              <MdOutlineEmail /> {company?.email}
+              <MdOutlineEmail /> {companyData?.user?.email}
             </p>
             <p className="text-gray-600 text-lg flex items-center gap-2">
-              <MdOutlineLocalPhone /> {company?.phone}
+              <MdOutlineLocalPhone /> {companyData?.user?.contact}
             </p>
             <p className="text-gray-600 text-lg flex items-center gap-2">
               <FaLocationDot /> {company?.address?.street}
@@ -245,6 +259,7 @@ const User = () => {
         />
         <Table
           columns={columns}
+          rowKey="_id"
           dataSource={filteredEmployees}
           pagination={{ pageSize: 10 }}
           scroll={{ x: 1000 }}
