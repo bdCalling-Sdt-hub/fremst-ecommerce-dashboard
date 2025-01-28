@@ -79,7 +79,7 @@ const authSlice = api.injectEndpoints({
       query: (data) => {
         return {
           method: "PATCH",
-          url: "/admin/profile",
+          url: "/user/profile",
           body: data,
           headers: {
             Authorization: `Bearer ${JSON.parse(
@@ -117,6 +117,34 @@ const authSlice = api.injectEndpoints({
         };
       },
     }),
+    fetchUserProfile: builder.query({
+      query: () => {
+        return {
+          method: "GET",
+          url: "/user/profile",
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          },
+        };
+      },
+    }),
+    updateUserProfile: builder.mutation({
+      query: (data) => {
+        return {
+          method: "PATCH",
+          url: "/user/profile",
+          body: data,
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          },
+        };
+      },
+      invalidatesTags: ["AdminData"],
+    }),
   }),
 });
 
@@ -130,4 +158,6 @@ export const {
   useProfileQuery,
   useUpdateAdminProfileMutation,
   useFetchAdminProfileQuery,
+  useFetchUserProfileQuery,
+  useUpdateUserProfileMutation,
 } = authSlice;

@@ -7,7 +7,9 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import {
   useFetchAdminProfileQuery,
+  useFetchUserProfileQuery,
   useUpdateAdminProfileMutation,
+  useUpdateUserProfileMutation,
 } from "../../../redux/apiSlices/authSlice";
 import logo from "../../../assets/randomProfile2.jpg";
 import toast from "react-hot-toast";
@@ -21,27 +23,27 @@ const PersonalInfo = () => {
   const [file, setFile] = useState(null);
   const [form] = Form.useForm();
 
-  const isLoading = false;
+  const [updateUserProfile] = useUpdateUserProfileMutation();
 
-  // const { data: fetchAdminProfile, isLoading } = useFetchAdminProfileQuery();
-  // const [updateAdminProfile] = useUpdateAdminProfileMutation();
+  const { data, isLoading, error } = useFetchUserProfileQuery();
+  const { name, profile, email, address, contact: phoneNumber } =
+    data?.data || {};
 
-  const fetchAdminProfile = [];
 
-  const adminData = fetchAdminProfile?.data;
+
 
   useEffect(() => {
-    if (adminData) {
+    if (data) {
       form.setFieldsValue({
-        name: adminData?.name,
-        email: adminData?.email,
-        address: adminData?.address,
-        phone: adminData?.contact,
+        name: name,
+        email: email,
+        address: address,
+        phone: phoneNumber,
       });
-      setImgURL(`${baseUrl}${adminData?.profileImg}`);
-      setContact(adminData?.contact);
+      setImgURL(profile.startsWith("https") ? profile : `${baseUrl}${profile}`);
+      setContact(phoneNumber);
     }
-  }, [form, adminData]);
+  }, [form, data]);
 
   if (isLoading) {
     return (
@@ -74,7 +76,7 @@ const PersonalInfo = () => {
         formData.append("imageUrl", imgURL);
       }
 
-      const response = await updateAdminProfile(formData);
+      const response = await updateUserProfile(formData);
 
       if (response.data) {
         toast.success(response?.data?.message);
@@ -85,6 +87,10 @@ const PersonalInfo = () => {
       console.error("Error updating form:", error);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);

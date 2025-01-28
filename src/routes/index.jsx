@@ -42,20 +42,21 @@ import Category from "../Pages/Dashboard/Salon/Category";
 import SubCategory from "../Pages/Dashboard/Salon/SubCategory";
 import Vendor from "../Pages/Dashboard/Vendor";
 import EmployeeProfile from "../Pages/Dashboard/EmployeeProfile";
-import AddProduct from "../Pages/Dashboard/Product/AddProduct";
+import AddProduct from "../Pages/Dashboard/Product/AddOrEditProduct";
 import ProductList from "../Pages/Dashboard/Product/ProductList";
 import AddCategory from "../Pages/Dashboard/category/AddCategory";
 import AddSubCategory from "../Pages/Dashboard/category/AddSubCategory";
 import Overview from "../Pages/CompanyDashboard/Overview";
+import AddOrEditProduct from "../Pages/Dashboard/Product/AddOrEditProduct";
 
 const router = createBrowserRouter([
   {
     path: "/",
     // element: <ProtectedRoute><Main /></ProtectedRoute> ,
     element: (
-      // <PrivateRoute>
+      <PrivateRoute>
       <Main />
-      // </PrivateRoute>
+      </PrivateRoute>
     ),
     children: [
       {
@@ -92,7 +93,11 @@ const router = createBrowserRouter([
 
       {
         path: "/addProduct",
-        element: <AddProduct />,
+        element: <AddOrEditProduct />,
+      },
+      {
+        path:'/product/:id',
+        element:<AddOrEditProduct/>
       },
       {
         path: "/productList",

@@ -4,21 +4,17 @@ import { FaRegBell } from "react-icons/fa6";
 import { Badge, Select } from "antd";
 import logo from "../../assets/randomProfile2.jpg";
 import i18next from "i18next";
+import { useFetchUserProfileQuery } from "../../redux/apiSlices/authSlice";
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const { Option } = Select;
 
 const Header = () => {
-  // Mock profile data
-  const profileData = {
-    profile:
-      "https://miro.medium.com/v2/resize:fit:400/1*B8c1ED3QV_yaa6PAWqDgMw.png",
-    name: "John Doe",
-  };
+  const { data: profileData, isLoading, error } = useFetchUserProfileQuery();
 
-  const handleSelectLanguage = (lang) => {
-    i18next.changeLanguage(lang);
-  };
-
+  const { name, profile } = profileData?.data || {};
+  
+  if (isLoading) return <div>Loading...</div>;
   return (
     <div className="flex items-center justify-end gap-7 h-full">
       {/* Language Selector */}
@@ -71,8 +67,12 @@ const Header = () => {
         }}
       >
         <img
-          src={profileData.profile}
-          alt={profileData.name || "User Profile"}
+          src={
+            profile.startsWith("https")
+              ? profile
+              : `${import.meta.env.VITE_BASE_URL}${profile}`
+          }
+          alt={name || "User Profile"}
           className="w-12 h-12 rounded-lg object-cover"
         />
         <div className="flex flex-col">
@@ -83,7 +83,7 @@ const Header = () => {
               fontWeight: "600",
             }}
           >
-            {profileData.name || "Guest"}
+            {name || "Guest"}
           </h2>
           <p className="text-sm">Super Admin</p>
         </div>
