@@ -106,7 +106,7 @@ const User = () => {
               <MdOutlineLocalPhone /> {companyData?.user?.contact}
             </p>
             <p className="text-gray-600 text-lg flex items-center gap-2">
-              <FaLocationDot /> {companyData?.user?.address?.street}
+              <FaLocationDot /> {companyData?.user?.address}
             </p>
           </div>
         </div>

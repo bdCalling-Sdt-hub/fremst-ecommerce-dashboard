@@ -106,15 +106,15 @@ const Sidebar = () => {
             </Link>
           ),
         },
-        {
-          key: "/addSubCategory",
-          icon: <BsDatabaseFillAdd size={24} />,
-          label: (
-            <Link to="/addSubCategory" className="text-white hover:text-white">
-              Add Sub Category
-            </Link>
-          ),
-        },
+        // {
+        //   key: "/addSubCategory",
+        //   icon: <BsDatabaseFillAdd size={24} />,
+        //   label: (
+        //     <Link to="/addSubCategory" className="text-white hover:text-white">
+        //       Add Sub Category
+        //     </Link>
+        //   ),
+        // },
       ],
     },
     // {

@@ -6,14 +6,14 @@ import toast from "react-hot-toast";
 import { useChangePasswordMutation } from "../../redux/apiSlices/authSlice";
 
 const ChangePassword = () => {
-  const isLoading = false;
+
   const [form] = Form.useForm();
   const [errorMessages, setErrorMessages] = useState({
     newPassError: "",
     conPassError: "",
   });
 
-  // const [changePassword, { isLoading }] = useChangePasswordMutation();
+  const [changePassword, { isLoading }] = useChangePasswordMutation();
 
   if (isLoading) {
     return (
@@ -49,8 +49,7 @@ const ChangePassword = () => {
           toast.error("Password change failed");
         }
       } catch (err) {
-        console.error("Error changing password:", err);
-        toast.error("An error occurred while changing the password");
+        toast.error(err?.data?.message || "An error occurred while changing the password");
       }
     }
   };
@@ -64,7 +63,7 @@ const ChangePassword = () => {
         className="w-[50%] mx-auto mt-20"
       >
         <Form.Item
-          name="currentPassword"
+          name="oldPassword"
           label={<p>Current Password</p>}
           rules={[
             {

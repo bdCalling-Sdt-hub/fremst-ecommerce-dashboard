@@ -1,13 +1,27 @@
 import { Form, Input } from "antd";
 import React from "react";
+import { useChangePasswordMutation } from "../../../redux/apiSlices/authSlice";
+import toast from "react-hot-toast";
 
 const ChangePassword = () => {
   const [form] = Form.useForm();
+  const [changePassword] = useChangePasswordMutation();
 
-  const handleChangePassword = (values) => {
-    console.log(values);
+  const handleChangePassword =  (values) => {
+    console.log("Mutation Function:", changePassword);
+    console.log("Values Submitted:", values);
+  
+    try {
+      const response =  changePassword(values).unwrap();
+      console.log("Response:", response);
+      toast.success("Password changed successfully");
+    } catch (error) {
+      console.error("Error changing password:", error);
+      toast.error(error?.data?.message || "Failed to change password");
+    }
   };
-
+  
+  
   return (
     <div className="px-6 lg:px-12 mt-8">
       <Form
@@ -18,7 +32,7 @@ const ChangePassword = () => {
         className="w-full lg:w-1/2"
       >
         <Form.Item
-          name="current_password"
+          name="currentPassword"
           label={<p className="block">Current Password</p>}
           rules={[
             {
@@ -35,7 +49,7 @@ const ChangePassword = () => {
         </Form.Item>
 
         <Form.Item
-          name="new_password"
+          name="newPassword"
           label={<p className="block">New Password</p>}
           dependencies={["current_password"]}
           hasFeedback
@@ -66,9 +80,9 @@ const ChangePassword = () => {
         </Form.Item>
 
         <Form.Item
-          name="confirm_password"
+          name="confirmPassword"
           label={<p className="block">Re-Type Password</p>}
-          dependencies={["new_password"]}
+          dependencies={["newPassword"]}
           hasFeedback
           rules={[
             {
@@ -95,12 +109,13 @@ const ChangePassword = () => {
         </Form.Item>
 
         <Form.Item className="flex  justify-end">
-          <button
-            type="submit"
-            className="bg-primary text-white w-36 h-11 rounded-lg"
-          >
-            Save
-          </button>
+        <button
+          type="submit"
+          className="bg-primary text-white w-36 h-11 rounded-lg"
+  
+        >
+save
+        </button>
         </Form.Item>
       </Form>
     </div>

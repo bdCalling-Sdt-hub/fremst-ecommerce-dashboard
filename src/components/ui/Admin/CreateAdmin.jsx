@@ -1,63 +1,128 @@
-import { Form, Input, Modal } from 'antd';
-import React from 'react';
+import React, { useState } from "react";
+import { Modal, Form, Input, Select, Upload, Button } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { useCreateAdminMutation } from "../../../redux/apiSlices/userSlice";
+import toast from "react-hot-toast";
 
-const CreateAdmin = ({ open, setOpen }) => { 
+const { Option } = Select;
+
+const CreateAdmin = ({ open, setOpen }) => {
   const [form] = Form.useForm();
+  const [fileList, setFileList] = useState([]);
+  const [createAdmin, { isLoading }] = useCreateAdminMutation();
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleOk = () => {
+    form.validateFields().then(async (values) => {
+      let jsonPayload = {};
+      const formData = new FormData();
+
+      for (const key in values) {
+        jsonPayload[key] = values[key];
+      }
+
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        formData.append("image", fileList[0].originFileObj);
+      }
+
+      formData.append("data", JSON.stringify(jsonPayload));
+
+      try {
+        const response = await createAdmin(formData).unwrap();
+        toast.success(response?.message || "Admin created successfully!");
+        form.resetFields();
+        setFileList([]);
+        setOpen(false);
+      } catch (error) {
+        toast.error(error?.data?.message || "Failed to create admin");
+      }
+    });
+  };
+
+  const handleCancel = () => {
     form.resetFields();
+    setFileList([]);
+    setOpen(false);
+  };
+
+  const handleUpload = ({ fileList }) => {
+    setFileList(fileList);
   };
 
   return (
     <Modal
-      centered
-      open={open}
-      onCancel={handleClose}
-      width={500}
-      footer={null}
+      title="Create Admin"
+      visible={open}
+      onOk={handleOk}
+      onCancel={handleCancel}
     >
-      <div className="p-6 mt-4">
-        <h1 className="font-semibold text-[#555555] text-xl mb-3">Add Admin</h1>
-        
-        <Form form={form} layout='vertical'>
-          <Form.Item
-            label="Name"
-            name="fullName"
-            rules={[{ required: true, message: "Please enter the admin's name" }]}
-            className="text-[#6D6D6D] py-1"
+      <Form form={form} layout="vertical">
+        <Form.Item
+          name="name"
+          label="Name"
+          rules={[{ required: true, message: "Please input the name!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[
+            { required: true, message: "Please input the email!" },
+            { type: "email", message: "Please enter a valid email!" },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="contact"
+          label="Contact"
+          rules={[
+            { required: true, message: "Please input the contact!" },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          label="Password"
+          rules={[
+            { required: true, message: "Please input the password!" },
+            { min: 6, message: "Password must be at least 6 characters!" },
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item
+          name="role"
+          label="Role"
+          rules={[{ required: true, message: "Please select the role!" }]}
+        >
+          <Select>
+            <Option value="admin">Admin</Option>
+            <Option value="super-admin">Super Admin</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="profile"
+          label="Profile Image"
+          rules={[{ required: true, message: "Please upload a profile image!" }]}
+        >
+          <Upload
+            listType="picture-card"
+            maxCount={1}
+            fileList={fileList}
+            beforeUpload={() => false} // Prevent automatic upload
+            onChange={handleUpload}
           >
-            <Input className="w-full border outline-none px-3 py-[10px]" />
-          </Form.Item>
-
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: "Please enter the admin's email" }]}
-            className="text-[#6D6D6D] py-1"
-          >
-            <Input className="w-full border outline-none px-3 py-[10px]" />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Please enter a password" }]}
-            className="text-[#6D6D6D] py-1"
-          >
-            <Input.Password className="w-full border outline-none px-3 py-[10px]" />
-          </Form.Item>
-
-          <Form.Item className="text-center mt-6">
-            <button
-              type="submit"
-              className="bg-primary text-white w-40 h-11 rounded-lg"
-            >
-              Create
-            </button>
-          </Form.Item>
-        </Form>
-      </div>
+            {fileList.length >= 1 ? null : (
+              <div>
+                <UploadOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </div>
+            )}
+          </Upload>
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };

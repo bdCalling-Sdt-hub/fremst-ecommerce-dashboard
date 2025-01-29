@@ -3,20 +3,19 @@ import { Table, Input, Button, Space, Select } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { MdAdd, MdDelete, MdEditSquare } from "react-icons/md";
-import { useGetProductsQuery } from "../../../redux/apiSlices/productSlice";
+import { useDeleteProductMutation, useGetProductsQuery } from "../../../redux/apiSlices/productSlice";
 import moment from "moment/moment";
+import toast from "react-hot-toast";
 
 const { Option } = Select;
 
 const ProductList = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-
-  const { data, isLoading } = useGetProductsQuery();
+  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation()
+  const { data, isLoading, refetch} = useGetProductsQuery();
 
   const products = data?.data || [];
-
-
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -24,6 +23,16 @@ const ProductList = () => {
 
   const handleStatusFilter = (value) => {
     setStatusFilter(value);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteProduct(id).unwrap();
+      // refetch();
+      toast.success(response?.data?.message || "Product deleted successfully!");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to delete product!");
+    }
   };
 
   const filteredProducts = products.filter((product) => {
@@ -87,7 +96,7 @@ const ProductList = () => {
           <Link to={`/product/${record._id}`}>
             <MdEditSquare size={24} className="text-green-600" />
           </Link>
-          <Button>
+          <Button  onClick={() => handleDelete(record._id)}>
             <MdDelete size={24} className="text-red-600" />
           </Button>
         </Space>

@@ -109,12 +109,12 @@ const Users = () => {
 
   const columns = [
     {
-      title: "Id",
-      dataIndex: "_id",
-      key: "id",
-      render: (text) => (
+      title: "S.No",
+      dataIndex: "index",
+      key: "index",
+      render: (text, record, index) => (
         <p>
-          <Tooltip title={text}>{text.slice(0, 8) + "..."}</Tooltip>
+          <Tooltip title={index + 1}>{index + 1}</Tooltip>
         </p>
       ),
     },

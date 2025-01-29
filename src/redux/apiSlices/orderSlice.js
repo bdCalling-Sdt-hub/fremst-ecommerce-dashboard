@@ -6,19 +6,30 @@ const orderSlice = api.injectEndpoints({
       query: () => {
         return {
           method: "GET",
-          url: "/dashboard/orders",
+          url: "/order",
         };
       },
+      providesTags: ["Order"],
     }),
     orderProgress: builder.query({
       query: () => {
         return {
           method: "GET",
-          url: "/dashboard/order-progress",
+          url: "/order-progress",
         };
       },
+    }),
+    orderStatusChange : builder.mutation({
+      query: ({ id, status }) => {
+        return {
+          method: "PATCH",
+          url: `/order/${id}/${status}`,
+          body: { status },
+        };
+      },
+      invalidatesTags: ["Order"],
     }),
   }),
 });
 
-export const { useOrdersQuery, useOrderProgressQuery } = orderSlice;
+export const { useOrdersQuery, useOrderProgressQuery, useOrderStatusChangeMutation } = orderSlice;

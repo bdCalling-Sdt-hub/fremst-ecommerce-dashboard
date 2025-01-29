@@ -7,90 +7,10 @@ const { Search } = Input;
 const Category = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const categoriesData = [
-    {
-      id: 1,
-      name: "Hair Services",
-      description:
-        "Comprehensive hair care services including cuts, styling, and treatments.",
-      subCategories: [
-        {
-          name: "Men's Haircut",
-          description: "Classic and modern haircuts for men.",
-        },
-        {
-          name: "Women's Hair Styling",
-          description: "Customized hair styles for women.",
-        },
-        {
-          name: "Color Treatments",
-          description: "Hair coloring and highlights services.",
-        },
-        {
-          name: "Spa Treatments",
-          description:
-            "Relaxing treatments like scalp massage and deep conditioning.",
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "Nail Services",
-      description:
-        "Nail care and enhancement services including manicures and pedicures.",
-      subCategories: [
-        {
-          name: "Hand Care",
-          description: "Moisturizing and therapeutic hand treatments.",
-        },
-        {
-          name: "Foot Care",
-          description: "Includes pedicure and foot massage.",
-        },
-        {
-          name: "Decorative Nails",
-          description: "Nail art, embellishments, and gels.",
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "Beauty Services",
-      description:
-        "Wide range of beauty services including facials and waxing.",
-      subCategories: [
-        {
-          name: "Skin Care",
-          description: "Facials, masks, and skin treatments.",
-        },
-        {
-          name: "Hair Removal",
-          description: "Waxing and threading for unwanted hair.",
-        },
-        {
-          name: "Facial Grooming",
-          description: "Eyebrow shaping, facial threading, and grooming.",
-        },
-      ],
-    },
-    {
-      id: 4,
-      name: "Wellness Services",
-      description: "Services to promote wellness and relaxation.",
-      subCategories: [
-        {
-          name: "Body Massage",
-          description: "Various massage techniques for relaxation.",
-        },
-        {
-          name: "Skin Exfoliation",
-          description: "Exfoliating treatments for smoother skin.",
-        },
-      ],
-    },
-  ];
+  const { data, isLoading, error } = useGetCategoriesQuery();
+  const categories = data?.data || [];
 
-  const filteredCategories = categoriesData.filter(
+  const filteredCategories = categories.filter(
     (category) =>
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       category.subCategories.some((sub) =>
@@ -108,7 +28,7 @@ const Category = () => {
       />
       <p className="my-3">
         Total Services:{" "}
-        <span className="font-semibold">{categoriesData.length} Items</span>{" "}
+        <span className="font-semibold">{categories.length} Items</span>{" "}
         Found
       </p>
       <Collapse accordion>

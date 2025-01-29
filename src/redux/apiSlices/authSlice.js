@@ -48,18 +48,6 @@ const authSlice = api.injectEndpoints({
         };
       },
     }),
-
-    changePassword: builder.mutation({
-      query: (value) => {
-        return {
-          method: "POST",
-          url: "/auth/change-password",
-          body: value,
-        };
-      },
-      invalidatesTags: ["AdminData"],
-    }),
-
     updateProfile: builder.mutation({
       query: (data) => {
         return {
@@ -145,6 +133,16 @@ const authSlice = api.injectEndpoints({
       },
       invalidatesTags: ["AdminData"],
     }),
+    changePassword: builder.mutation({
+      query: (value) => {
+        return {
+          method: "POST",
+          url: "/auth/change-password",
+          body: value,
+        };
+      },
+      invalidatesTags: ["AdminData"],
+    }),
   }),
 });
 
@@ -160,4 +158,5 @@ export const {
   useFetchAdminProfileQuery,
   useFetchUserProfileQuery,
   useUpdateUserProfileMutation,
+  
 } = authSlice;

@@ -3,6 +3,7 @@ import { Form, Input, Button, Upload, Select, InputNumber, Tag } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useCreateProductMutation, useGetCategoriesQuery, useGetSingleProductQuery, useUpdateProductMutation } from "../../../redux/apiSlices/productSlice";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -98,56 +99,87 @@ const AddOrEditProduct = () => {
           }))
         );
       }
+
+
+
     }
   }, [product, id, form]);
 
 
-  console.log(featuredImageList, "+++++++++")
-  console.log(fileList, "+++++++++")
-  // Handle form submission for create/update
+
+
   const handleSubmit = async (values) => {
     const formData = new FormData();
-
-    // Add product image
-    if (fileList.length > 0) {
-      const file = fileList[0].originFileObj || fileList[0].url; // Use URL if it's an existing image
-      formData.append("image", file);
+    let jsonPayload = {}; // Store non-file fields separately
+  
+    // ✅ Check if a new product image is uploaded before appending
+    if (fileList.length > 0 && fileList[0].originFileObj) {
+      formData.append("image", fileList[0].originFileObj);
     }
-
-    // Add featured images
-    if (featuredImageList.length > 0) {
-      featuredImageList.forEach((file) => {
-        const fileObj = file.originFileObj || file.url;
-        formData.append("featuredImage", fileObj);
+  
+    // ✅ Check if new featured images are uploaded before appending
+    const newFeaturedImages = featuredImageList.filter((file) => file.originFileObj);
+    if (newFeaturedImages.length > 0) {
+      newFeaturedImages.forEach((file) => {
+        formData.append("featuredImage", file.originFileObj);
       });
     }
-
-    // Add other form fields
+  
+    // ✅ Collect existing featured images and add to JSON payload (not FormData)
+    const existingImages = featuredImageList
+      .filter((item) => item.url)
+      .map((item) => item.url.slice(BASE_URL.length));
+  
+    if (existingImages.length > 0) {
+      jsonPayload.existingFeaturedImages = existingImages; // Store as JSON field
+    }
+  
+    // ✅ Append other form fields to JSON payload
     Object.entries(values).forEach(([key, value]) => {
       if (Array.isArray(value)) {
-        value.forEach((v) => formData.append(`${key}[]`, v));
+        jsonPayload[key] = value;
       } else {
-        if (key === "availability") {
-          formData.append(key, value === "isStock");
-        } else {
-          formData.append(key, value);
-        }
+        jsonPayload[key] = key === "availability" ? value === "isStock" : value;
       }
     });
-
+  
+    // Convert JSON payload to a string and append it to FormData
+    formData.append("data", JSON.stringify(jsonPayload));
+  
+    // // 🔍 Debugging
+    // console.log("Submitting FormData:");
+    // for (let [key, value] of formData.entries()) {
+    //   console.log(key, value);
+    // }
+  
     try {
-      if (id) {
-        // Update product
-        await updateProduct({ id, formData });
+     if(id){
+      const response = await updateProduct({ id, data: formData });
+  
+      if (response?.data?.success) {
+        toast.success(response?.data?.message);
       } else {
-        // Create product
-        await createProduct(formData);
+        toast.error(response?.data?.message);
       }
+     }else{
+      const response = await createProduct(formData);
+  
+      if (response?.data?.success) {
+        toast.success(response?.data?.message);
+        form.resetFields(); // Reset the form
+        setFileList([]); // Clear product image
+        setFeaturedImageList([]); // Clear featured images
+      } else {
+        toast.error(response?.data?.message);
+      }
+     }
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
+  
+  
+  
   const tagRender = (props) => {
     const { label, closable, onClose } = props;
     return (
@@ -175,6 +207,7 @@ const AddOrEditProduct = () => {
       </Tag>
     );
   };
+
 
   return (
     <div className="container mx-auto p-5">
@@ -300,7 +333,10 @@ const AddOrEditProduct = () => {
                 name="image"
                 label="Product Image"
                 rules={[
-                  { required: true, message: "Please upload product image!" },
+                  {
+                    required: !id || fileList.length === 0,// Bypass required if updating and no new image is selected
+                    message: "Please upload product image!",
+                  },
                 ]}
               >
                 <Upload
@@ -325,31 +361,31 @@ const AddOrEditProduct = () => {
                 label="Featured Images"
                 rules={[
                   {
-                    required: true,
+                    required: !id || featuredImageList.length === 0, // Bypass required if updating and no new images are selected
                     message: "Please upload featured images!",
                   },
                 ]}
               >
-              <Upload
-                listType="picture-card"
-                maxCount={5}
-                fileList={featuredImageList}
-                multiple={true}
-                beforeUpload={() => false}
-                onChange={handleFeaturedImageListChange}
-              >
-                <div>
-                  <UploadOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </div>
-              </Upload>
+                <Upload
+                  listType="picture-card"
+                  maxCount={5}
+                  fileList={featuredImageList}
+                  multiple={true}
+                  beforeUpload={() => false}
+                  onChange={handleFeaturedImageListChange}
+                >
+                  <div>
+                    <UploadOutlined />
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
+                </Upload>
               </Form.Item>
             </div>
 
             <div className="flex-1 bg-white p-5 rounded-2xl border-t-8 border-primary">
-              <Form.Item
-                name="category"
-                label="Category"
+            <Form.Item
+              name="category"
+              label="Category"
                 rules={[
                   { required: true, message: "Please select a category!" },
                 ]}

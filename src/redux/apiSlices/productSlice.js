@@ -9,6 +9,7 @@ const productSlice = api.injectEndpoints({
           url: "/product",
         };
       },
+      providesTags: ["Product"], 
     }),
     getCategories: builder.query({
       query: () => {
@@ -43,6 +44,7 @@ const productSlice = api.injectEndpoints({
           },
         };
       },
+      invalidatesTags: ["Product"],
     }),
     createProduct: builder.mutation({
       query: (data) => {
@@ -60,20 +62,18 @@ const productSlice = api.injectEndpoints({
       invalidatesTags: ["Product"],
     }),
     updateProduct: builder.mutation({
-      query: ({ id, data }) => {
-        return {        
-          method: "PATCH",
-          url: `/product/${id}`,        
-          body: data,
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-          },
-        };
-      },
-      invalidatesTags: ["Product"],
-    }),
+        query: ({ id, data }) => {
+          return {
+            method: "PATCH",
+            url: `/product/${id}`,
+            body: data, // This should be FormData
+            headers: () => ({
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+            }),
+          };
+        },
+        invalidatesTags: ["Product"],
+      }),
     deleteProduct: builder.mutation({
       query: (id) => {
         return {

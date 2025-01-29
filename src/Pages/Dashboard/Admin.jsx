@@ -1,71 +1,48 @@
-import { Table, Input, Button, Select, Space } from "antd";
+import { Table, Input, Button, Space, Alert, Modal } from "antd";
 import React, { useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import CreateAdmin from "../../components/ui/Admin/CreateAdmin";
 import Title from "../../components/common/Title";
+import { useDeleteAdminMutation, useGetAllAdminsQuery } from "../../redux/apiSlices/userSlice";
+import toast from "react-hot-toast";
 
-const { Option } = Select;
-
-const data = [
-  {
-    key: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "Admin",
-    createdAt: "2023-01-01",
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    key: 2,
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    role: "Editor",
-    createdAt: "2023-02-01",
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    key: 3,
-    name: "Alice Johnson",
-    email: "alice.johnson@example.com",
-    role: "Admin",
-    createdAt: "2023-03-01",
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    key: 4,
-    name: "Bob Brown",
-    email: "bob.brown@example.com",
-    role: "Viewer",
-    createdAt: "2023-04-01",
-    image: "https://via.placeholder.com/50",
-  },
-  {
-    key: 5,
-    name: "Charlie Davis",
-    email: "charlie.davis@example.com",
-    role: "Editor",
-    createdAt: "2023-05-01",
-    image: "https://via.placeholder.com/50",
-  },
-];
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const Admin = () => {
   const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [deleteAdmin, { isLoading }] = useDeleteAdminMutation();
+  const { data, isFetching } = useGetAllAdminsQuery();
+
+  const admins = data?.data || [];
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
   };
 
-  const handleRoleChange = (value, record) => {
-    const updatedData = data.map((item) =>
-      item.key === record.key ? { ...item, role: value } : item
-    );
-    // Update the state or perform any other necessary actions with updatedData
-    console.log(updatedData);
+  const handleDelete = async (id) => {
+    //show a alert before deleting
+    Modal.confirm({
+      title: "Are you sure?",
+      content: "Do you really want to delete this admin? This action cannot be undone.",
+      okText: "Yes, Delete",
+      cancelText: "Cancel",
+      okType: "danger",
+      centered: true,
+      onOk: async () => {
+        try {
+          const response = await deleteAdmin(id).unwrap();
+          toast.success(response?.message || "Admin deleted successfully");
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to delete admin");
+        }
+      },
+    });
+
+
   };
 
-  const filteredData = data.filter((item) =>
+  const filteredData = admins.filter((item) =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -83,7 +60,7 @@ const Admin = () => {
       render: (text, record) => (
         <Space>
           <img
-            src={record.image}
+            src={record?.profile?.startsWith("http") ? record.profile : `${BASE_URL}${record.profile}`}
             alt={record.name}
             style={{ width: 50, height: 50, borderRadius: "50%" }}
           />
@@ -101,15 +78,9 @@ const Admin = () => {
       dataIndex: "role",
       key: "role",
       render: (text, record) => (
-        <Select
-          defaultValue={text}
-          onChange={(value) => handleRoleChange(value, record)}
-          style={{ width: 120 }}
-        >
-          <Option value="Admin">Admin</Option>
-          <Option value="Editor">Editor</Option>
-          <Option value="Viewer">Viewer</Option>
-        </Select>
+        <span className=" bg-gray-100 py-1 px-2 rounded-full">
+          {record.role === "admin" ? "Admin" : "Super Admin"}
+        </span>
       ),
     },
     {
@@ -122,7 +93,9 @@ const Admin = () => {
       dataIndex: "action",
       key: "action",
       render: (_, record) => (
-        <RiDeleteBin5Line size={24} className="text-red-600" />
+        <Button onClick={() => handleDelete(record._id)}>
+          <RiDeleteBin5Line size={24} className="text-red-600" />
+        </Button>
       ),
     },
   ];

@@ -1,56 +1,21 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Select, Space } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { Table, Button, Input, Select, Space, Modal, Tag, Descriptions } from "antd";
+import { EyeOutlined } from "@ant-design/icons";
+import { useOrdersQuery, useOrderStatusChangeMutation } from "../../redux/apiSlices/orderSlice";
+import toast from "react-hot-toast";
 
 const { Option } = Select;
-
-const dummyData = [
-  {
-    key: "1",
-    id: "ORD001",
-    productName: "Product A",
-    customerName: "Alice Brown",
-    items: 3,
-    cost: 150,
-    status: "In Progress",
-    date: "2024-12-18",
-  },
-  {
-    key: "2",
-    id: "ORD002",
-    productName: "Product B",
-    customerName: "Bob Smith",
-    items: 1,
-    cost: 50,
-    status: "Completed",
-    date: "2024-12-19",
-  },
-  {
-    key: "3",
-    id: "ORD003",
-    productName: "Product C",
-    customerName: "Charlie Green",
-    items: 2,
-    cost: 100,
-    status: "Pending",
-    date: "2024-12-20",
-  },
-  {
-    key: "4",
-    id: "ORD004",
-    productName: "Product D",
-    customerName: "Diana White",
-    items: 5,
-    cost: 250,
-    status: "Cancelled",
-    date: "2024-12-21",
-  },
-  // Additional dummy data...
-];
 
 const RunningOrders = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [updateStatus, { isLoading: isUpdating }] = useOrderStatusChangeMutation();
+  const { data, isLoading } = useOrdersQuery();
+
+  // Ensure orders data is properly extracted
+  const orders = data?.data?.data || [];
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -60,65 +25,102 @@ const RunningOrders = () => {
     setStatusFilter(value);
   };
 
-  const filteredData = dummyData.filter(
+  // Filtered data based on search and status
+  const filteredData = orders.filter(
     (item) =>
-      item.productName.toLowerCase().includes(searchText.toLowerCase()) &&
-      (statusFilter ? item.status === statusFilter : true)
+      item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+      (statusFilter ? item.status.toLowerCase() === statusFilter.toLowerCase() : true)
   );
 
+  const showModal = (order) => {
+    setSelectedOrder(order);
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleStatusChange = (status) => {
+    try {
+      updateStatus({ id: selectedOrder._id, status: status.toLowerCase() });
+      toast.success(`Status changed to ${status}`);
+    } catch (error) {
+      toast.error(error?.data?.message);
+    }
+    setIsModalVisible(false);
+  };
+
+  // Table columns
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Product Name",
-      dataIndex: "productName",
-      key: "productName",
+      title: "Order ID",
+      dataIndex: "orderId",
+      key: "orderId",
     },
     {
       title: "Customer Name",
-      dataIndex: "customerName",
-      key: "customerName",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      render: (company) => company?.user?.name || "N/A",
+    },
+    {
+      title: "Contact",
+      dataIndex: "contact",
+      key: "contact",
     },
     {
       title: "Items",
       dataIndex: "items",
       key: "items",
-      sorter: (a, b) => a.items - b.items,
+      render: (items) =>
+        items.map((item, index) => (
+          <div key={index}>
+            <strong>{item.product.name}</strong> ({item.size}, {item.color}) - {item.quantity} pcs
+          </div>
+        )),
     },
     {
-      title: "Cost",
-      dataIndex: "cost",
-      key: "cost",
-      render: (cost) => `$${cost}`,
-      sorter: (a, b) => a.cost - b.cost,
+      title: "Total Amount",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (amount) => `$${amount}`,
+      sorter: (a, b) => a.totalAmount - b.totalAmount,
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span
-          className={`px-2 py-1 text-xs rounded-full ${
-            status === "In Progress"
-              ? "bg-orange-200 text-orange-600"
-              : status === "Completed"
-              ? "bg-green-200 text-green-600"
-              : status === "Pending"
-              ? "bg-yellow-200 text-yellow-600"
-              : "bg-red-200 text-red-800"
-          }`}
+        <Tag
+          color={
+            status === "pending"
+              ? "orange"
+              : status === "completed"
+              ? "green"
+              : status === "cancelled"
+              ? "red"
+              : "blue"
+          }
         >
           {status}
-        </span>
+        </Tag>
       ),
     },
     {
       title: "Date",
-      dataIndex: "date",
-      key: "date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => new Date(date).toLocaleDateString(),
     },
     {
       title: "Actions",
@@ -126,19 +128,12 @@ const RunningOrders = () => {
       render: (_, record) => (
         <Button
           type="link"
-          icon={<DeleteOutlined />}
-          onClick={() => handleDelete(record.key)}
-        >
-          Delete
-        </Button>
+          icon={<EyeOutlined />}
+          onClick={() => showModal(record)}
+        />
       ),
     },
   ];
-
-  const handleDelete = (key) => {
-    console.log(`Deleting order with key: ${key}`);
-    // Add logic to delete the order here
-  };
 
   return (
     <div className="container mx-auto p-4">
@@ -152,7 +147,7 @@ const RunningOrders = () => {
       >
         <Space>
           <Input
-            placeholder="Search"
+            placeholder="Search by Customer Name"
             value={searchText}
             onChange={handleSearch}
             style={{ width: 400, height: 40 }}
@@ -163,14 +158,86 @@ const RunningOrders = () => {
             style={{ width: 200, height: 40 }}
             allowClear
           >
-            <Option value="In Progress">In Progress</Option>
+            <Option value="shipped">Dispatched</Option>
             <Option value="Completed">Completed</Option>
             <Option value="Pending">Pending</Option>
             <Option value="Cancelled">Cancelled</Option>
           </Select>
         </Space>
       </div>
-      <Table columns={columns} dataSource={filteredData} rowKey="key" />
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        rowKey="_id"
+        loading={isLoading}
+      />
+           <Modal
+        title={<span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Order Details</span>}
+        open={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+        centered
+        width={600}
+      >
+        {selectedOrder && (
+          <Descriptions bordered column={1} size="middle">
+            <Descriptions.Item label="Order ID">{selectedOrder?.orderId}</Descriptions.Item>
+            <Descriptions.Item label="Customer Name">{selectedOrder?.name}</Descriptions.Item>
+            <Descriptions.Item label="Company">
+              {selectedOrder?.company?.user?.name || "N/A"}
+            </Descriptions.Item>
+            <Descriptions.Item label="Contact">{selectedOrder?.contact}</Descriptions.Item>
+            <Descriptions.Item label="Items">
+              {selectedOrder?.items?.map((item, index) => (
+                <div key={index} style={{ marginBottom: 4 }}>
+                  <strong>{item.product.name}</strong> ({item.size}, {item.color}) - {item.quantity} pcs
+                </div>
+              ))}
+            </Descriptions.Item>
+            <Descriptions.Item label="Total Amount" style={{ fontWeight: 'bold', color: '#1890ff' }}>
+              ${selectedOrder?.totalAmount}
+            </Descriptions.Item>
+            <Descriptions.Item label="Status">
+              <Tag
+                color={
+                  selectedOrder?.status === "In Progress"
+                    ? "orange"
+                    : selectedOrder?.status === "Completed"
+                    ? "green"
+                    : selectedOrder?.status === "Pending"
+                    ? "yellow"
+                    : "red"
+                }
+              >
+                {selectedOrder.status}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label="Date">
+              {new Date(selectedOrder.createdAt).toLocaleDateString()}
+            </Descriptions.Item>
+          </Descriptions>
+        )}
+         <div style={{ textAlign: "center", marginTop: 20 }}>
+          <Button  className="bg-green-400    text-black" onClick={() => handleStatusChange("Completed")}>
+            Mark as Completed
+          </Button>
+          <Button
+            type="default"
+            onClick={() => handleStatusChange("Dispatched")}
+            style={{ marginLeft: 8 }}
+            className="bg-blue-500 text-black"
+          >
+            Mark as Dispatched
+          </Button>
+          <Button
+            className="bg-red-500 text-white"
+            onClick={() => handleStatusChange("Cancelled")}
+            style={{ marginLeft: 8 }}
+          >
+            Mark as Cancelled
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };
