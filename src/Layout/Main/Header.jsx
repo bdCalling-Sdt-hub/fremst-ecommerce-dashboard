@@ -12,8 +12,12 @@ const { Option } = Select;
 const Header = () => {
   const { data: profileData, isLoading, error } = useFetchUserProfileQuery();
 
-  const { name, profile } = profileData?.data || {};
-  
+  const { name, profile } =
+    profileData?.data?.user && profileData?.data?.user
+      ? profileData?.data?.user
+      : profileData?.data || {};
+
+
   if (isLoading) return <div>Loading...</div>;
   return (
     <div className="flex items-center justify-end gap-7 h-full">
@@ -68,7 +72,7 @@ const Header = () => {
       >
         <img
           src={
-            profile.startsWith("https")
+            profile?.startsWith("https")
               ? profile
               : `${import.meta.env.VITE_BASE_URL}${profile}`
           }

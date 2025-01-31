@@ -26,7 +26,7 @@ import UserProfile from "../Pages/Dashboard/AdminProfile/UserProfile";
 import TermsAndCondition from "../Pages/Dashboard/TermsAndCondition";
 
 import Vendors from "../Pages/Dashboard/Vendors";
-import PrivateRoute from "./PrivateRoute";
+// import PrivateRoute from "./PrivateRoute";
 import Banners from "../Pages/Dashboard/Banners";
 import EditBanners from "../components/ui/Banners/EditBanners";
 import AddBanners from "../components/ui/Banners/AddBanners";
@@ -53,11 +53,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     // element: <ProtectedRoute><Main /></ProtectedRoute> ,
-    element: (
-      <PrivateRoute>
-      <Main />
-      </PrivateRoute>
-    ),
+    element: <Main />,
     children: [
       {
         path: "/users",

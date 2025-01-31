@@ -27,8 +27,8 @@ const Login = () => {
         Cookies.set("refreshToken", refreshToken);
       } else {
         sessionStorage.setItem("authToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem("role", role);
+        sessionStorage.setItem("refreshToken", refreshToken);
+        sessionStorage.setItem("role", role);
         Cookies.set("refreshToken", refreshToken);
       }
 

@@ -29,7 +29,16 @@ const orderSlice = api.injectEndpoints({
       },
       invalidatesTags: ["Order"],
     }),
+    getOrderStatsForUser: builder.query({
+      query: (status, id) => {
+        return {
+          method: "GET",
+          url: `order/stats/${status}/${id && "companyId" in id ? id.companyId : ""}`,
+        };
+      },
+      providesTags: ["Order"],
+    }),
   }),
 });
 
-export const { useOrdersQuery, useOrderProgressQuery, useOrderStatusChangeMutation } = orderSlice;
+export const { useOrdersQuery, useOrderProgressQuery, useOrderStatusChangeMutation, useGetOrderStatsForUserQuery } = orderSlice;

@@ -78,6 +78,7 @@ const userSlice = api.injectEndpoints({
       },
       invalidatesTags: ["Admin"],
     }),
+    
     deleteAdmin: builder.mutation({
       query: (id) => {
         return {
@@ -87,7 +88,27 @@ const userSlice = api.injectEndpoints({
       },
       invalidatesTags: ["Admin"],
     }),
+    getCompanyProfile: builder.query({
+      query: () => {
+        return {
+          method: "GET",
+          url: `/user/profile`,
+        };
+      },
+      providesTags: ["Company"],
+    }),
+    getEmployeesForCompany: builder.query({
+      query: () => {
+        return {
+          method: "GET",
+          url: `/admin/employees`,
+        };
+      },
+      providesTags: ["Employee"],
+    }),
   }),
+
+
 });
 
 export const {
@@ -100,4 +121,6 @@ export const {
   useGetAllAdminsQuery,
   useCreateAdminMutation,
   useDeleteAdminMutation,
+  useGetCompanyProfileQuery,
+  useGetEmployeesForCompanyQuery
 } = userSlice;

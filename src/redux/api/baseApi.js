@@ -43,7 +43,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
       if (refreshResult?.data?.data) {
         // Save the new access token to localStorage
-        localStorage.removeItem("authToken");
+        // localStorage.removeItem("authToken");
         localStorage.setItem(
           "authToken",
           refreshResult?.data?.data?.accessToken
