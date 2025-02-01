@@ -114,6 +114,17 @@ const userSlice = api.injectEndpoints({
       },
       providesTags: ["Employee"],
     }),
+
+    createEmployee: builder.mutation({
+      query: (data) => {
+        return {
+          method: "POST",
+          url: "/user/create-account",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Employee"],
+    }),
   }),
 });
 
@@ -130,4 +141,5 @@ export const {
   useDeleteAdminMutation,
   useGetCompanyProfileQuery,
   useGetEmployeesForCompanyQuery,
+  useCreateEmployeeMutation,
 } = userSlice;

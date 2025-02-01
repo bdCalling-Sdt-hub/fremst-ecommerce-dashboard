@@ -20,18 +20,28 @@ import { RiMoneyCnyCircleLine } from "react-icons/ri";
 import { GiMoneyStack } from "react-icons/gi";
 import SalesTrackingChart from "../../components/ui/Home/SalesTrackingChart";
 import {
+  useCreateEmployeeMutation,
   useGetCompanyProfileQuery,
   useGetEmployeesForCompanyQuery,
 } from "../../redux/apiSlices/userSlice";
+import toast from "react-hot-toast";
 
 const Overview = () => {
   const [searchText, setSearchText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
+  const [file, setFile] = useState(null);
 
-  const { data: company, isFetching } = useGetCompanyProfileQuery();
-  const { data: companyEmployees, isFetching: isEmployeesFetching } =
-    useGetEmployeesForCompanyQuery();
+  console.log(file);
+
+  const { data: company, isFetching, refetch } = useGetCompanyProfileQuery();
+  const {
+    data: companyEmployees,
+    isFetching: isEmployeesFetching,
+    refetch: refetchEmployees,
+  } = useGetEmployeesForCompanyQuery();
+
+  const [createEmployee] = useCreateEmployeeMutation();
 
   if (isFetching) {
     return <div>Loading...</div>;
@@ -57,8 +67,50 @@ const Overview = () => {
     form.resetFields();
   };
 
-  const handleFormSubmit = (values) => {
-    console.log("Employee Data:", values);
+  const handleFormSubmit = async (values) => {
+    // Ensure the uploaded file is properly extracted
+    console.log(values);
+    const file = values.image?.[0]?.originFileObj;
+
+    if (!file) {
+      toast.error("Please upload a valid image");
+      return;
+    }
+
+    const formData = new FormData();
+    const data = {
+      name: values.name,
+      email: values.email,
+      contact: values.contact,
+      address: {
+        streetAddress: values.streetAddress,
+        city: values.city,
+        postalCode: values.postalCode,
+      },
+      password: values.password,
+      designation: values.designation,
+      budget: Number(values.budget),
+      duration: Number(values.duration),
+      role: "employee",
+      company: companyData?._id,
+    };
+
+    formData.append("data", JSON.stringify(data));
+    formData.append("image", file);
+
+    try {
+      const response = await createEmployee(formData).unwrap();
+      console.log(response);
+      if (response.success) {
+        refetch();
+        refetchEmployees();
+        toast.success(response?.message);
+      }
+    } catch (error) {
+      toast.error(error?.data?.message);
+    }
+
+    console.log("Employee Data:", data);
     setIsModalOpen(false);
     form.resetFields();
   };
@@ -226,124 +278,134 @@ const Overview = () => {
         width={800}
       >
         <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-            }}
-          >
-            <Form.Item
-              name="name"
-              label="Employee Name *"
-              rules={[{ required: true, message: "Please enter the name" }]}
-            >
-              <Input placeholder="Enter Name" />
-            </Form.Item>
-            <Form.Item
-              name="image"
-              label="Employee Image *"
-              rules={[{ required: true, message: "Please upload an image" }]}
-            >
-              <Upload.Dragger>
-                <p className="ant-upload-drag-icon">
-                  <FaInbox />
-                </p>
-                <p className="ant-upload-text">
-                  Drop your image here or Click to upload
-                </p>
-              </Upload.Dragger>
-            </Form.Item>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-            }}
-          >
-            <Form.Item
-              name="email"
-              label="Email *"
-              rules={[
-                {
-                  required: true,
-                  type: "email",
-                  message: "Please enter a valid email",
-                },
-              ]}
-            >
-              <Input placeholder="Enter email" />
-            </Form.Item>
-            <Form.Item name="phone" label="Phone Number">
-              <Input addonBefore={"+43"} placeholder="316 123456" />
-            </Form.Item>
-          </div>
-          <Form.Item name="address" label="Address">
-            <Input.TextArea placeholder="Enter Address" />
-          </Form.Item>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-            }}
-          >
-            <Form.Item
-              name="password"
-              label="Password *"
-              rules={[{ required: true, message: "Please enter a password" }]}
-            >
-              <Input.Password placeholder="Enter Password" />
-            </Form.Item>
-            <Form.Item
-              name="designation"
-              label="Designation *"
-              rules={[
-                { required: true, message: "Please enter a designation" },
-              ]}
-            >
-              <Select placeholder="Enter employee Designation">
-                <Option value="manager">Manager</Option>
-                <Option value="developer">Developer</Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px",
-            }}
-          >
-            <Form.Item
-              name="budget"
-              label="Budget Amount *"
-              rules={[
-                { required: true, message: "Please enter budget amount" },
-              ]}
-            >
-              <Input placeholder="Enter Employee Budget" />
-            </Form.Item>
-            <Form.Item
-              name="duration"
-              label="Budget Duration *"
-              rules={[{ required: true, message: "Please select duration" }]}
-            >
-              <Select defaultValue="6 Months">
-                <Option value="3 Months">3 Months</Option>
-                <Option value="6 Months">6 Months</Option>
-                <Option value="12 Months">12 Months</Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <div
-            style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}
-          >
-            <Button onClick={handleCancel}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
-              Save
-            </Button>
+          <div className="flex w-full gap-3">
+            <div className="w-1/2">
+              <Form.Item
+                name="name"
+                label="Employee Name *"
+                rules={[{ required: true, message: "Please enter the name" }]}
+              >
+                <Input placeholder="Enter Name" />
+              </Form.Item>
+
+              <Form.Item
+                name="email"
+                label="Email *"
+                rules={[
+                  {
+                    required: true,
+                    type: "email",
+                    message: "Please enter a valid email",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter email" />
+              </Form.Item>
+
+              <Form.Item name="contact" label="Phone Number">
+                <Input placeholder="316 123456" />
+              </Form.Item>
+
+              <div className="flex w-full gap-3">
+                <Form.Item name="streetAddress" label="Street Address">
+                  <Input placeholder="Enter Street Address" />
+                </Form.Item>
+                <Form.Item name="city" label="City">
+                  <Input placeholder="Enter City" />
+                </Form.Item>
+                <Form.Item name="postalCode" label="Postal Code">
+                  <Input placeholder="Enter Postal Code" />
+                </Form.Item>
+              </div>
+
+              <Form.Item
+                name="password"
+                label="Password *"
+                rules={[{ required: true, message: "Please enter a password" }]}
+              >
+                <Input.Password placeholder="Enter Password" />
+              </Form.Item>
+            </div>
+            <div>
+              <Form.Item
+                name="image"
+                label="Employee Image *"
+                rules={[{ required: true, message: "Please upload an image" }]}
+                valuePropName="fileList"
+                getValueFromEvent={(e) => e?.fileList} // Ensures form receives fileList
+              >
+                <Upload.Dragger
+                  beforeUpload={() => false} // Prevents automatic upload
+                  listType="picture"
+                  maxCount={1}
+                >
+                  <p className="ant-upload-drag-icon">
+                    <FaInbox />
+                  </p>
+                  <p className="ant-upload-text">
+                    Drop your image here or Click to upload
+                  </p>
+                </Upload.Dragger>
+              </Form.Item>
+
+              <Form.Item
+                name="designation"
+                label="Designation *"
+                rules={[
+                  { required: true, message: "Please enter a designation" },
+                ]}
+              >
+                <Input placeholder="Enter employee Designation" />
+              </Form.Item>
+
+              <div className="flex w-full gap-3">
+                <Form.Item
+                  name="budget"
+                  label="Budget Amount *"
+                  rules={[
+                    { required: true, message: "Please enter budget amount" },
+                    {
+                      pattern: new RegExp(/^[0-9]+$/),
+                      message: "Only numbers are allowed",
+                    },
+                  ]}
+                >
+                  <Input
+                    type="number"
+                    placeholder="Enter Employee Budget"
+                    min={0}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="duration"
+                  label="Budget Duration *"
+                  rules={[
+                    { required: true, message: "Please select duration" },
+                  ]}
+                >
+                  <Select defaultValue="6 Months">
+                    <Option value="1">1 Months</Option>
+                    <Option value="3">3 Months</Option>
+                    <Option value="6">6 Months</Option>
+                    <Option value="12">12 Months</Option>
+                    <Option value="18">18 Months</Option>
+                    <Option value="24">24 Months</Option>
+                  </Select>
+                </Form.Item>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "10px",
+                }}
+              >
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button type="primary" htmlType="submit">
+                  Save
+                </Button>
+              </div>
+            </div>
           </div>
         </Form>
       </Modal>
