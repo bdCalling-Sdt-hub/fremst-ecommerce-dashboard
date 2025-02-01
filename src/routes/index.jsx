@@ -48,6 +48,7 @@ import AddCategory from "../Pages/Dashboard/category/AddCategory";
 import AddSubCategory from "../Pages/Dashboard/category/AddSubCategory";
 import Overview from "../Pages/CompanyDashboard/Overview";
 import AddOrEditProduct from "../Pages/Dashboard/Product/AddOrEditProduct";
+import CompanyOrderPage from "../Pages/Dashboard/CompanyOrderPage";
 
 const router = createBrowserRouter([
   {
@@ -92,8 +93,8 @@ const router = createBrowserRouter([
         element: <AddOrEditProduct />,
       },
       {
-        path:'/product/:id',
-        element:<AddOrEditProduct/>
+        path: "/product/:id",
+        element: <AddOrEditProduct />,
       },
       {
         path: "/productList",
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
       {
         path: "orders",
         element: <Orders />,
+      },
+      {
+        path: "/company-orders",
+        element: <CompanyOrderPage />,
       },
       {
         path: "/admin",

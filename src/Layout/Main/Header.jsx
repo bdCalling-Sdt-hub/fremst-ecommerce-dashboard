@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Badge, Select } from "antd";
@@ -10,15 +10,21 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 const { Option } = Select;
 
 const Header = () => {
-  const { data: profileData, isLoading, error } = useFetchUserProfileQuery();
+  const { data: profileData, isLoading, refetch } = useFetchUserProfileQuery();
 
   const { name, profile } =
     profileData?.data?.user && profileData?.data?.user
       ? profileData?.data?.user
       : profileData?.data || {};
 
+  useEffect(() => {
+    refetch();
+  }, []);
 
   if (isLoading) return <div>Loading...</div>;
+
+  console.log(profileData?.data);
+
   return (
     <div className="flex items-center justify-end gap-7 h-full">
       {/* Language Selector */}

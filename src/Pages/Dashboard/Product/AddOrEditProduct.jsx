@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Upload, Select, InputNumber, Tag } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import { useCreateProductMutation, useGetCategoriesQuery, useGetSingleProductQuery, useUpdateProductMutation } from "../../../redux/apiSlices/productSlice";
-import { useParams } from "react-router-dom";
+import {
+  useCreateProductMutation,
+  useGetCategoriesQuery,
+  useGetSingleProductQuery,
+  useUpdateProductMutation,
+} from "../../../redux/apiSlices/productSlice";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const { TextArea } = Input;
@@ -13,6 +18,7 @@ const AddOrEditProduct = () => {
   const [fileList, setFileList] = useState([]);
   const [featuredImageList, setFeaturedImageList] = useState([]);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const sizeOptions = ["S", "M", "L", "XL", "2XL", "3XL"];
   const colorOptions = ["Red", "Blue", "Green", "Yellow", "Black", "White"];
@@ -20,10 +26,12 @@ const AddOrEditProduct = () => {
   const tagOptions = ["Winter", "Summer", "Spring", "Fall", "Autumn"];
 
   // Fetch categories for dropdown
-  const { data: categories, isFetching: isFetchingCategories } = useGetCategoriesQuery();
+  const { data: categories, isFetching: isFetchingCategories } =
+    useGetCategoriesQuery();
 
   // Fetch product details if editing
-  const { data: product, isFetching: isFetchingProduct } = useGetSingleProductQuery(id);
+  const { data: product, isFetching: isFetchingProduct } =
+    useGetSingleProductQuery(id);
 
   // Mutations
   const [createProduct, { isLoading: isCreating }] = useCreateProductMutation();
@@ -71,7 +79,9 @@ const AddOrEditProduct = () => {
 
       // Handle main image
       if (image) {
-        const imageUrl = `${BASE_URL}${image.startsWith("https") ? image : `${image}`}`;
+        const imageUrl = `${BASE_URL}${
+          image.startsWith("https") ? image : `${image}`
+        }`;
 
         setFileList([
           {
@@ -85,9 +95,8 @@ const AddOrEditProduct = () => {
 
       // Handle featured images
       if (featuredImages?.length) {
-        const featuredUrls = featuredImages.map((url) =>
-
-         `${BASE_URL}${url.startsWith("https") ? url : `${url}`}`
+        const featuredUrls = featuredImages.map(
+          (url) => `${BASE_URL}${url.startsWith("https") ? url : `${url}`}`
         );
 
         setFeaturedImageList(
@@ -99,41 +108,37 @@ const AddOrEditProduct = () => {
           }))
         );
       }
-
-
-
     }
   }, [product, id, form]);
-
-
-
 
   const handleSubmit = async (values) => {
     const formData = new FormData();
     let jsonPayload = {}; // Store non-file fields separately
-  
+
     // ✅ Check if a new product image is uploaded before appending
     if (fileList.length > 0 && fileList[0].originFileObj) {
       formData.append("image", fileList[0].originFileObj);
     }
-  
+
     // ✅ Check if new featured images are uploaded before appending
-    const newFeaturedImages = featuredImageList.filter((file) => file.originFileObj);
+    const newFeaturedImages = featuredImageList.filter(
+      (file) => file.originFileObj
+    );
     if (newFeaturedImages.length > 0) {
       newFeaturedImages.forEach((file) => {
         formData.append("featuredImage", file.originFileObj);
       });
     }
-  
+
     // ✅ Collect existing featured images and add to JSON payload (not FormData)
     const existingImages = featuredImageList
       .filter((item) => item.url)
       .map((item) => item.url.slice(BASE_URL.length));
-  
+
     if (existingImages.length > 0) {
       jsonPayload.existingFeaturedImages = existingImages; // Store as JSON field
     }
-  
+
     // ✅ Append other form fields to JSON payload
     Object.entries(values).forEach(([key, value]) => {
       if (Array.isArray(value)) {
@@ -142,44 +147,46 @@ const AddOrEditProduct = () => {
         jsonPayload[key] = key === "availability" ? value === "isStock" : value;
       }
     });
-  
+
     // Convert JSON payload to a string and append it to FormData
     formData.append("data", JSON.stringify(jsonPayload));
-  
+
     // // 🔍 Debugging
     // console.log("Submitting FormData:");
     // for (let [key, value] of formData.entries()) {
     //   console.log(key, value);
     // }
-  
+
     try {
-     if(id){
-      const response = await updateProduct({ id, data: formData });
-  
-      if (response?.data?.success) {
-        toast.success(response?.data?.message);
+      if (id) {
+        const response = await updateProduct({ id, data: formData });
+
+        if (response?.data?.success) {
+          toast.success(response?.data?.message);
+          form.resetFields();
+          setFileList([]);
+          setFeaturedImageList([]);
+          navigate("/productList");
+        } else {
+          toast.error(response?.data?.message);
+        }
       } else {
-        toast.error(response?.data?.message);
+        const response = await createProduct(formData);
+
+        if (response?.data?.success) {
+          toast.success(response?.data?.message);
+          form.resetFields(); // Reset the form
+          setFileList([]); // Clear product image
+          setFeaturedImageList([]); // Clear featured images
+        } else {
+          toast.error(response?.data?.message);
+        }
       }
-     }else{
-      const response = await createProduct(formData);
-  
-      if (response?.data?.success) {
-        toast.success(response?.data?.message);
-        form.resetFields(); // Reset the form
-        setFileList([]); // Clear product image
-        setFeaturedImageList([]); // Clear featured images
-      } else {
-        toast.error(response?.data?.message);
-      }
-     }
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  
-  
-  
+
   const tagRender = (props) => {
     const { label, closable, onClose } = props;
     return (
@@ -207,7 +214,6 @@ const AddOrEditProduct = () => {
       </Tag>
     );
   };
-
 
   return (
     <div className="container mx-auto p-5">
@@ -314,7 +320,9 @@ const AddOrEditProduct = () => {
               <Form.Item
                 name={"quantity"}
                 label="Quantity"
-                rules={[{ required: true, message: "Please input the quantity!" }]}
+                rules={[
+                  { required: true, message: "Please input the quantity!" },
+                ]}
                 className="w-1/2"
               >
                 <InputNumber
@@ -334,7 +342,7 @@ const AddOrEditProduct = () => {
                 label="Product Image"
                 rules={[
                   {
-                    required: !id || fileList.length === 0,// Bypass required if updating and no new image is selected
+                    required: !id || fileList.length === 0, // Bypass required if updating and no new image is selected
                     message: "Please upload product image!",
                   },
                 ]}
@@ -383,9 +391,9 @@ const AddOrEditProduct = () => {
             </div>
 
             <div className="flex-1 bg-white p-5 rounded-2xl border-t-8 border-primary">
-            <Form.Item
-              name="category"
-              label="Category"
+              <Form.Item
+                name="category"
+                label="Category"
                 rules={[
                   { required: true, message: "Please select a category!" },
                 ]}

@@ -13,7 +13,11 @@ import { Link } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { IoMdAdd } from "react-icons/io";
 import { FaEye } from "react-icons/fa6";
-import { useGetAllCompaniesQuery, useCreateCompanyMutation, useUpdateCompanyMutation } from "../../redux/apiSlices/userSlice";
+import {
+  useGetAllCompaniesQuery,
+  useCreateCompanyMutation,
+  useUpdateCompanyMutation,
+} from "../../redux/apiSlices/userSlice";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -33,6 +37,7 @@ const Users = () => {
   }
 
   const companies = allCompanies?.data?.data;
+  // console.log(companies);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -224,31 +229,46 @@ const Users = () => {
           <Form.Item
             name="name"
             label="Company Name"
-            rules={[{ required: true, message: "Please input the company name!" }]}
+            rules={[
+              { required: true, message: "Please input the company name!" },
+            ]}
           >
             <Input placeholder="Enter company name" className="bg-gray-50" />
           </Form.Item>
           <Form.Item
             name="email"
             label="Company Email"
-            rules={[{ required: true, message: "Please input the company email!" }]}
+            rules={[
+              { required: true, message: "Please input the company email!" },
+            ]}
           >
-            <Input placeholder="Enter company email" className="bg-gray-50" disabled={!!currentCompany} />
+            <Input
+              placeholder="Enter company email"
+              className="bg-gray-50"
+              disabled={!!currentCompany}
+            />
           </Form.Item>
           <Form.Item
             name="contact"
             label="Company Contact Number"
             rules={[
-              { required: true, message: "Please input the company contact number!" },
+              {
+                required: true,
+                message: "Please input the company contact number!",
+              },
             ]}
-
           >
-            <Input placeholder="Enter company contact number" className="bg-gray-50" />
+            <Input
+              placeholder="Enter company contact number"
+              className="bg-gray-50"
+            />
           </Form.Item>
           <Form.Item
             name="address"
             label="Company Address"
-            rules={[{ required: true, message: "Please input the company address!" }]}
+            rules={[
+              { required: true, message: "Please input the company address!" },
+            ]}
           >
             <Input.TextArea
               placeholder="Enter company address"
@@ -258,7 +278,12 @@ const Users = () => {
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: !currentCompany, message: "Please input the password!" }]}
+            rules={[
+              {
+                required: !currentCompany,
+                message: "Please input the password!",
+              },
+            ]}
           >
             <Input.Password
               placeholder="Enter password"

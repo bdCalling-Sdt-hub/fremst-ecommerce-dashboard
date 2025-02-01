@@ -5,35 +5,70 @@ const privacyPolicySlice = api.injectEndpoints({
     updatePricyPolicy: builder.mutation({
       query: (data) => {
         return {
-          url: `/others/privacy-policy`,
+          url: `/others`,
           method: "POST",
           body: data,
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-          },
         };
       },
     }),
     privacyPolicy: builder.query({
-      query: (userType) => {
+      query: () => {
         return {
-          url: `/others/privacy-policy/${userType}`,
+          url: `/others/privacy-policy`,
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-          },
         };
       },
-      transformResponse: ({ data }) => {
-        return data;
+    }),
+
+    //faq
+    getFaq: builder.query({
+      query: () => {
+        return {
+          url: `/others/get-faq`,
+          method: "GET",
+        };
       },
+      providesTags: ["Faq"],
+    }),
+    createFaq: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/others/faq`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Faq"],
+    }),
+    updateFaq: builder.mutation({
+      query: ({ data, id }) => {
+        return {
+          url: `/others/faq/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["Faq"],
+    }),
+    deleteFaq: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/others/faq/${id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ["Faq"],
     }),
   }),
 });
 
-export const { useUpdatePricyPolicyMutation, usePrivacyPolicyQuery } =
-  privacyPolicySlice;
+export const {
+  useUpdatePricyPolicyMutation,
+  usePrivacyPolicyQuery,
+
+  //faq
+  useGetFaqQuery,
+  useCreateFaqMutation,
+  useUpdateFaqMutation,
+  useDeleteFaqMutation,
+} = privacyPolicySlice;

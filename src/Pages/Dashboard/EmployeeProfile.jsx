@@ -11,158 +11,34 @@ import {
   MdOutlineLocalPhone,
   MdOutlineLocationOn,
 } from "react-icons/md";
-import { Button, Input, Select, Table } from "antd";
+import { Button, Input, Select, Table, Tooltip } from "antd";
 import moment from "moment";
 import { TbShoppingCartCheck } from "react-icons/tb";
 import { IoIosCalculator } from "react-icons/io";
 import { RiMoneyCnyCircleLine } from "react-icons/ri";
 import { GiMoneyStack } from "react-icons/gi";
-
-const profile = {
-  name: "John Doe",
-  designation: "Marketing Manager",
-  company: "TechSphere Innovations Ltd.",
-  email: "johndoe@example.com",
-  phone: "+1 123 456 7890",
-  address: "123 Elm Street, Springfield, USA",
-  profileImage: profileImg,
-  budgetDetails: {
-    assigned: "50,000",
-    duration: "12 months",
-    assignDate: "2024-01-01",
-    expirationDate: "2024-12-31",
-  },
-  totalOrder: 120,
-  totalBudget: "50,000",
-  totalSpend: "35,000",
-  remainingBudget: "15,000",
-  orderHistory: [
-    {
-      _id: "1",
-      productName: "Digital Marketing Campaign",
-      item: "Social Media Ads",
-      price: "5,000",
-      status: "Completed",
-      date: "2024-02-15",
-    },
-    {
-      _id: "2",
-      productName: "SEO Optimization",
-      item: "On-page SEO",
-      price: "3,000",
-      status: "Completed",
-      date: "2024-03-10",
-    },
-    {
-      _id: "3",
-      productName: "Brand Design",
-      item: "Logo Design",
-      price: "2,000",
-      status: "In Progress",
-      date: "2024-12-20",
-    },
-    {
-      _id: "4",
-      productName: "Content Marketing",
-      item: "Blog Posts",
-      price: "10,000",
-      status: "Pending",
-      date: "2024-12-25",
-    },
-    {
-      _id: "5",
-      productName: "PPC Campaign",
-      item: "Google Ads",
-      price: "8,000",
-      status: "Completed",
-      date: "2024-04-05",
-    },
-    {
-      _id: "6",
-      productName: "Website Development",
-      item: "E-commerce Website",
-      price: "50,000",
-      status: "In Progress",
-      date: "2024-05-12",
-    },
-    {
-      _id: "7",
-      productName: "Email Marketing",
-      item: "Newsletter Campaign",
-      price: "4,000",
-      status: "Pending",
-      date: "2024-06-15",
-    },
-    {
-      _id: "8",
-      productName: "App Development",
-      item: "Mobile App",
-      price: "100,000",
-      status: "In Progress",
-      date: "2024-07-18",
-    },
-    {
-      _id: "9",
-      productName: "Video Marketing",
-      item: "YouTube Ads",
-      price: "12,000",
-      status: "Completed",
-      date: "2024-08-25",
-    },
-    {
-      _id: "10",
-      productName: "Graphic Design",
-      item: "Banner Design",
-      price: "3,500",
-      status: "Pending",
-      date: "2024-09-10",
-    },
-    {
-      _id: "11",
-      productName: "SEO Services",
-      item: "Technical SEO",
-      price: "6,000",
-      status: "Completed",
-      date: "2024-10-01",
-    },
-    {
-      _id: "12",
-      productName: "Brand Strategy",
-      item: "Market Analysis",
-      price: "7,500",
-      status: "In Progress",
-      date: "2024-10-20",
-    },
-    {
-      _id: "13",
-      productName: "Photography",
-      item: "Product Photoshoot",
-      price: "15,000",
-      status: "Pending",
-      date: "2024-11-05",
-    },
-    {
-      _id: "14",
-      productName: "Social Media Management",
-      item: "Monthly Content Plan",
-      price: "9,000",
-      status: "Completed",
-      date: "2024-11-15",
-    },
-    {
-      _id: "15",
-      productName: "Public Relations",
-      item: "Press Release",
-      price: "20,000",
-      status: "Completed",
-      date: "2024-11-30",
-    },
-  ],
-};
+import { useGetSingleEmployeeByIdQuery } from "../../redux/apiSlices/userSlice";
+import { useParams } from "react-router-dom";
+import { useGetEmployeeOrdersHistoryQuery } from "../../redux/apiSlices/orderSlice";
 
 const EmployeeProfile = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const { id } = useParams();
+
+  const { data: getEmployeeData, isFetching } =
+    useGetSingleEmployeeByIdQuery(id);
+  const { data: getEmployeeOrders, isFetching: isFetchingOrders } =
+    useGetEmployeeOrdersHistoryQuery(id);
+
+  if (isFetching || isFetchingOrders) {
+    return <div>Loading...</div>;
+  }
+
+  const employeeData = getEmployeeData?.data || [];
+  const orderHistory = getEmployeeOrders?.data?.data || [];
+
+  console.log(orderHistory);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -172,11 +48,18 @@ const EmployeeProfile = () => {
     setStatusFilter(value);
   };
 
-  const filteredOrderHistory = profile.orderHistory.filter((order) => {
-    return (
-      order.productName.toLowerCase().includes(searchText.toLowerCase()) &&
-      (statusFilter ? order.status === statusFilter : true)
-    );
+  const filteredOrderHistory = orderHistory?.filter((order) => {
+    const matchesSearchText = searchText
+      ? order?.items?.some((item) =>
+          item?.product?.name?.toLowerCase().includes(searchText.toLowerCase())
+        )
+      : true;
+
+    const matchesStatusFilter = statusFilter
+      ? order?.status?.toLowerCase() === statusFilter.toLowerCase()
+      : true;
+
+    return matchesSearchText && matchesStatusFilter;
   });
 
   const columns = [
@@ -184,21 +67,28 @@ const EmployeeProfile = () => {
       title: "Id",
       dataIndex: "_id",
       key: "_id",
+      render: (id) => <Tooltip title={id}>{id?.slice(0, 10)}</Tooltip>,
     },
     {
       title: "Product Name",
-      dataIndex: "productName",
-      key: "productName",
+      dataIndex: "items",
+      key: "items",
+      render: (items) =>
+        items?.map((item, index) => (
+          <div key={index}>{item?.product?.name}</div>
+        )),
     },
     {
       title: "Item",
-      dataIndex: "item",
-      key: "item",
+      dataIndex: "items",
+      key: "items",
+      render: (items) => <span>{items?.length}</span>,
     },
     {
       title: "Price",
-      dataIndex: "price",
-      key: "price",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (text) => <span>${text?.toFixed(2)}</span>,
     },
     {
       title: "Status",
@@ -207,10 +97,10 @@ const EmployeeProfile = () => {
       render: (text) => (
         <span
           className={
-            text === "Completed"
+            text === "pending"
+              ? "text-yellow-600"
+              : text === "delivered"
               ? "text-green-500"
-              : text === "In Progress"
-              ? "text-blue-500"
               : "text-red-500"
           }
         >
@@ -223,11 +113,6 @@ const EmployeeProfile = () => {
       dataIndex: "date",
       key: "date",
       render: (date) => <span>{moment(date).format("L")}</span>,
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: () => <FaEye size={20} color="#292C61" />,
     },
   ];
 
@@ -244,14 +129,20 @@ const EmployeeProfile = () => {
             <div className="w-48 h-48 border-8 rounded-full border-white">
               <img
                 className="object-cover w-full h-full rounded-full"
-                src={profile?.profileImage}
+                src={
+                  employeeData?.user?.profile?.startsWith("https")
+                    ? employeeData?.user?.profile
+                    : `${import.meta.env.VITE_BASE_URL}${
+                        employeeData?.user?.profile
+                      }`
+                }
                 alt="profileImg"
                 width={200}
                 height={200}
               />
             </div>
-            <p className="text-md flex items-center gap-4">
-              {profile?.name}{" "}
+            <p className="text-3xl font-semibold flex items-center gap-4">
+              {employeeData?.user?.name}{" "}
               <span>
                 <BsFillPatchCheckFill color="#1e88e5" size={30} />
               </span>
@@ -262,31 +153,35 @@ const EmployeeProfile = () => {
               <span>
                 <PiSuitcaseSimple />
               </span>
-              {profile?.designation}
+              {employeeData?.designation}
             </h1>
             <h1 className="flex items-center gap-2 text-lg">
               <span>
                 <FaRegBuilding />
               </span>
-              {profile?.company}
+              {employeeData?.company?.user?.name}
             </h1>
             <h1 className="flex items-center gap-2 text-lg">
               <span>
                 <MdOutlineEmail />
               </span>
-              {profile?.email}
+              {employeeData?.user?.email}
             </h1>
             <h1 className="flex items-center gap-2 text-lg">
               <span>
                 <MdOutlineLocalPhone />
               </span>
-              {profile?.phone}
+              {employeeData?.user?.contact}
             </h1>
             <h1 className="flex items-center gap-2 text-lg">
               <span>
                 <MdOutlineLocationOn />
               </span>
-              {profile?.address}
+              {employeeData?.user?.address
+                ? employeeData?.user?.address?.streetAddress
+                  ? `${employeeData?.user?.address?.streetAddress} ${employeeData?.user?.address?.city} ${employeeData?.user?.address?.state} ${employeeData?.user?.address?.city} ${employeeData?.user?.address?.postalCode}`
+                  : employeeData?.user?.address
+                : "N/A"}
             </h1>
           </div>
         </div>
@@ -297,22 +192,18 @@ const EmployeeProfile = () => {
           </h1>
           <div className="p-5">
             <h1 className="text-lg">
-              Assigned Budget: <span>${profile?.budgetDetails?.assigned}</span>
+              Assigned Budget: <span>${employeeData?.totalBudget}</span>
             </h1>
             <h1 className="text-lg">
-              Assigned Budget: <span>{profile?.budgetDetails?.duration}</span>
+              Assigned Duration: <span>{employeeData?.duration} Months</span>
             </h1>
             <h1 className="text-lg">
-              Assigned Budget:{" "}
-              <span>
-                {moment(profile?.budgetDetails?.assignDate).format("LL")}
-              </span>
+              Assigned Date:{" "}
+              <span>{moment(employeeData?.budgetAssignedAt).format("LL")}</span>
             </h1>
             <h1 className="text-lg">
-              Assigned Budget:{" "}
-              <span>
-                {moment(profile?.budgetDetails?.expirationDate).format("LL")}
-              </span>
+              Expiration Date:{" "}
+              <span>{moment(employeeData?.budgetExpiredAt).format("LL")}</span>
             </h1>
           </div>
         </div>
@@ -325,28 +216,32 @@ const EmployeeProfile = () => {
               <TbShoppingCartCheck size={40} />
             </div>
             <h1 className="text-lg text-gray-600">Total Order</h1>
-            <h1 className="text-2xl font-bold">{profile?.totalOrder}</h1>
+            <h1 className="text-2xl font-bold">{employeeData?.totalOrders}</h1>
           </div>
           <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
             <div className="p-6 rounded-2xl bg-[#fff6da]">
               <IoIosCalculator size={40} />
             </div>
             <h1 className="text-lg text-gray-600">Total Budget</h1>
-            <h1 className="text-2xl font-bold">{profile?.totalBudget}</h1>
+            <h1 className="text-2xl font-bold">${employeeData?.totalBudget}</h1>
           </div>
           <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
             <div className="p-6 rounded-2xl bg-[#edf6fd]">
               <RiMoneyCnyCircleLine size={40} />
             </div>
             <h1 className="text-lg text-gray-600">Total Spend</h1>
-            <h1 className="text-2xl font-bold">{profile?.totalSpend}</h1>
+            <h1 className="text-2xl font-bold">
+              ${employeeData?.totalSpentBudget}
+            </h1>
           </div>
           <div className="flex flex-col hover:shadow-xl px-8 rounded-2xl shadow-md py-6 gap-3 items-center">
             <div className="p-6 rounded-2xl bg-[#fce7e7]">
               <GiMoneyStack size={40} />
             </div>
             <h1 className="text-lg text-gray-600">Remaining Budget</h1>
-            <h1 className="text-2xl font-bold">{profile?.remainingBudget}</h1>
+            <h1 className="text-2xl font-bold">
+              ${employeeData?.budgetLeft?.toFixed(2)}
+            </h1>
           </div>
         </div>
 
@@ -364,9 +259,9 @@ const EmployeeProfile = () => {
             style={{ width: "20%" }}
             allowClear
           >
-            <Select.Option value="Completed">Completed</Select.Option>
-            <Select.Option value="In Progress">In Progress</Select.Option>
-            <Select.Option value="Pending">Pending</Select.Option>
+            <Select.Option value="delivered">Delivered</Select.Option>
+            <Select.Option value="cancelled">Cancelled</Select.Option>
+            <Select.Option value="pending">Pending</Select.Option>
           </Select>
         </div>
 

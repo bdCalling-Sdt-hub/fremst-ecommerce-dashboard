@@ -9,7 +9,11 @@ import { TbShoppingCartCheck } from "react-icons/tb";
 import { RiMoneyCnyCircleLine } from "react-icons/ri";
 import { GiMoneyStack } from "react-icons/gi";
 import SalesTrackingChart from "../../components/ui/Home/SalesTrackingChart";
-import { useGetCompanyByIdQuery, useGetEmployeesByCompanyQuery } from "../../redux/apiSlices/userSlice";
+import {
+  useGetCompanyByIdQuery,
+  useGetEmployeesByCompanyQuery,
+} from "../../redux/apiSlices/userSlice";
+import moment from "moment";
 
 const User = () => {
   const { id } = useParams();
@@ -19,11 +23,14 @@ const User = () => {
   const { data: companyEmployees, isFetching: isEmployeesFetching } =
     useGetEmployeesByCompanyQuery(id);
 
-  if (isFetching) {
+  if (isFetching || isEmployeesFetching) {
     return <div>Loading...</div>;
   }
 
-  const companyData = companyById?.data;
+  const companyData = companyById?.data || {};
+  const employeesData = companyEmployees?.data?.data || [];
+
+  console.log(employeesData);
 
   const imgUrl =
     companyData?.user?.profile ||
@@ -33,34 +40,43 @@ const User = () => {
     setSearchText(e.target.value);
   };
 
-  const filteredEmployees = companyEmployees.data.data;
+  const filteredEmployees = employeesData;
 
   const columns = [
     {
-      title: "ID",
+      title: "Serial",
       dataIndex: "id",
       key: "id",
+      render: (text, record, index) => <p>{index + 1}</p>,
     },
 
     {
       title: "Name",
-      dataIndex: "name",
+      dataIndex: ["user", "name"],
       key: "name",
     },
     {
       title: "Email",
-      dataIndex: "email",
+      dataIndex: ["user", "email"],
       key: "email",
     },
     {
-      title: "Budget List",
-      dataIndex: "budgetList",
-      key: "budgetList",
+      title: "Budget",
+      dataIndex: "budget",
+      key: "budget",
+      render: (text) => <p>${text}</p>,
+    },
+    {
+      title: "Budget Left",
+      dataIndex: "budgetLeft",
+      key: "budgetLeft",
+      render: (text) => <p>${text?.toFixed(2)}</p>,
     },
     {
       title: "Expire On",
-      dataIndex: "expireOn",
-      key: "expireOn",
+      dataIndex: "budgetExpiredAt",
+      key: "budgetExpiredAt",
+      render: (text) => <p>{moment(text).format("DD-MM-YYYY")}</p>,
     },
     {
       title: "Designation",
@@ -72,7 +88,7 @@ const User = () => {
       key: "actions",
       render: (text, record) => (
         <Space>
-          <Link to={`/employee/details/${record.id}`}>
+          <Link to={`/employee/details/${record._id}`}>
             <Button className="bg-[#e9b007] text-white border-none">
               <FaEye size={24} />
             </Button>
@@ -87,15 +103,15 @@ const User = () => {
       <div className="flex w-full">
         <div className="w-[25%] flex gap-5 flex-col">
           <div className="p-5 rounded-xl shadow-md bg-white">
-          <img
-            className="w-80 h-80 mx-auto rounded-xl object-cover"
-            src={
-              imgUrl?.startsWith("http")
-                ? imgUrl
-                : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
-            }
-            alt=""
-          />
+            <img
+              className="w-80 h-80 mx-auto rounded-xl object-cover"
+              src={
+                imgUrl?.startsWith("http")
+                  ? imgUrl
+                  : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
+              }
+              alt=""
+            />
           </div>
           <div className="p-4 bg-white shadow-md rounded-lg flex flex-col gap-3">
             <h1 className="text-3xl font-bold">{companyData?.user?.name}</h1>
@@ -117,28 +133,36 @@ const User = () => {
                 <TbShoppingCartCheck size={40} />
               </div>
               <h1 className="text-lg text-gray-600">Total Order</h1>
-              <h1 className="text-2xl font-bold">{companyData?.totalOrder || 0}</h1>
+              <h1 className="text-2xl font-bold">
+                {companyData?.totalOrder || 0}
+              </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
               <div className="p-6 rounded-2xl bg-[#fff6da]">
                 <IoIosCalculator size={40} />
               </div>
               <h1 className="text-lg text-gray-600">Total Budget</h1>
-              <h1 className="text-2xl font-bold">{companyData?.totalBudget || 0}</h1>
+              <h1 className="text-2xl font-bold">
+                {companyData?.totalBudget || 0}
+              </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
               <div className="p-6 rounded-2xl bg-[#edf6fd]">
                 <RiMoneyCnyCircleLine size={40} />
               </div>
               <h1 className="text-lg text-gray-600">Total Spend</h1>
-              <h1 className="text-2xl font-bold">{companyData?.totalSpend || 0}</h1>
+              <h1 className="text-2xl font-bold">
+                {companyData?.totalSpend || 0}
+              </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-8 rounded-2xl shadow-md py-6 gap-3 items-center">
               <div className="p-6 rounded-2xl bg-[#fce7e7]">
                 <GiMoneyStack size={40} />
               </div>
               <h1 className="text-lg text-gray-600">Remaining Budget</h1>
-              <h1 className="text-2xl font-bold">{companyData?.remainingBudget || 0}</h1>
+              <h1 className="text-2xl font-bold">
+                {companyData?.remainingBudget || 0}
+              </h1>
             </div>
           </div>
           <div className="bg-white p-5 my-5 rounded-xl shadow-lg">

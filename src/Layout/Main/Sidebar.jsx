@@ -15,7 +15,6 @@ import Cookies from "js-cookie";
 import logo from "../../assets/logoTransBg.png";
 import { FaBorderStyle, FaThList } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
-import { BsDatabaseFillAdd } from "react-icons/bs";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -35,33 +34,17 @@ const Sidebar = () => {
     navigate("/auth/login");
   };
 
-  const menuItems = [
-    // {
-    //   key: "/",
-    //   icon: <LuLayoutDashboard size={24} />,
-    //   label: (
-    //     <Link to="/" className="">
-    //       Dashboard
-    //     </Link>
-    //   ),
-    // },
+  // Get user role from local/session storage
+  const userRole =
+    localStorage.getItem("role") || sessionStorage.getItem("role");
 
-    // {
-    //   key: "/banners",
-    //   icon: <MdFeaturedPlayList size={24} />,
-    //   label: <Link to="/banners">Banners</Link>,
-    // },
-
+  // Define menu items for different roles
+  const adminMenuItems = [
     {
       key: "/users",
       icon: <TbUserScreen size={24} />,
       label: <Link to="/users">Customers</Link>,
     },
-    // {
-    //   key: "/vendors",
-    //   icon: <PiUserPlus size={24} />,
-    //   label: <Link to="/vendors">Barbers</Link>,
-    // },
     {
       key: "productMenu",
       icon: <AiFillProduct size={24} />,
@@ -106,28 +89,8 @@ const Sidebar = () => {
             </Link>
           ),
         },
-        // {
-        //   key: "/addSubCategory",
-        //   icon: <BsDatabaseFillAdd size={24} />,
-        //   label: (
-        //     <Link to="/addSubCategory" className="text-white hover:text-white">
-        //       Add Sub Category
-        //     </Link>
-        //   ),
-        // },
       ],
     },
-    // {
-    //   key: "/cancellation",
-    //   icon: <MdCancelPresentation size={24} />,
-    //   label: <Link to="/cancellation">Cancellation</Link>,
-    // },
-    // {
-    //   key: "/our-transactions",
-    //   icon: <FaMoneyBillTransfer size={24} />,
-    //   label: <Link to="/our-transactions">Transactions</Link>,
-    // },
-
     {
       key: "subMenuSetting",
       icon: <IoSettingsOutline size={24} />,
@@ -160,22 +123,6 @@ const Sidebar = () => {
             </Link>
           ),
         },
-        // {
-        //   key: "/offer-list",
-        //   label: (
-        //     <Link to="/offer-list" className="text-white hover:text-white">
-        //       Offer List
-        //     </Link>
-        //   ),
-        // },
-        // {
-        //   key: "/about-us",
-        //   label: (
-        //     <Link to="/about-us" className="text-white hover:text-white">
-        //       About Us
-        //     </Link>
-        //   ),
-        // },
         {
           key: "/terms-and-condition",
           label: (
@@ -206,9 +153,49 @@ const Sidebar = () => {
       ],
     },
     {
+      key: "/logout",
+      icon: <IoIosLogOut size={24} />,
+      label: <p onClick={handleLogout}>Logout</p>,
+    },
+  ];
+
+  const companyMenuItems = [
+    {
       key: "/overview",
       icon: <MdFeaturedPlayList size={24} />,
       label: <Link to="/overview">Overview</Link>,
+    },
+    {
+      key: "/company-orders",
+      icon: <MdFeaturedPlayList size={24} />,
+      label: <Link to="/company-orders">Orders</Link>,
+    },
+    {
+      key: "subMenuSetting",
+      icon: <IoSettingsOutline size={24} />,
+      label: "Settings",
+      children: [
+        // {
+        //   key: "/personal-information",
+        //   label: (
+        //     <Link
+        //       to="/personal-information"
+        //       className="text-white hover:text-white"
+        //     >
+        //       Personal Information
+        //     </Link>
+        //   ),
+        // },
+
+        {
+          key: "/change-password",
+          label: (
+            <Link to="/change-password" className="text-white hover:text-white">
+              Change Password
+            </Link>
+          ),
+        },
+      ],
     },
     {
       key: "/logout",
@@ -217,19 +204,28 @@ const Sidebar = () => {
     },
   ];
 
+  // Combine all menu items based on role
+  const getMenuItemsByRole = () => {
+    if (userRole === "company") {
+      return companyMenuItems;
+    }
+    // For "admin" and "superadmin", return adminMenuItems
+    return adminMenuItems;
+  };
+
+  const filteredMenuItems = getMenuItemsByRole();
+
   useEffect(() => {
-    const selectedItem = menuItems.find(
+    const selectedItem = filteredMenuItems.find(
       (item) =>
         item.key === path || item.children?.some((sub) => sub.key === path)
     );
-
     if (selectedItem) {
       setSelectedKey(path);
-
       if (selectedItem.children) {
         setOpenKeys([selectedItem.key]);
       } else {
-        const parentItem = menuItems.find((item) =>
+        const parentItem = filteredMenuItems.find((item) =>
           item.children?.some((sub) => sub.key === path)
         );
         if (parentItem) {
@@ -254,7 +250,7 @@ const Sidebar = () => {
         openKeys={openKeys}
         onOpenChange={handleOpenChange}
         style={{ borderRightColor: "transparent", background: "transparent" }}
-        items={menuItems}
+        items={filteredMenuItems}
       />
     </div>
   );

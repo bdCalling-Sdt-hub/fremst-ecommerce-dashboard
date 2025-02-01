@@ -38,6 +38,15 @@ const userSlice = api.injectEndpoints({
       },
       providesTags: ["Employee"],
     }),
+    getSingleEmployeeById: builder.query({
+      query: (id) => {
+        return {
+          method: "GET",
+          url: `/admin/employee/${id}`,
+        };
+      },
+      providesTags: ["Employee"],
+    }),
     createCompany: builder.mutation({
       query: (data) => {
         return {
@@ -73,12 +82,11 @@ const userSlice = api.injectEndpoints({
           method: "POST",
           url: "/user/create-account",
           body: data,
-          
         };
       },
       invalidatesTags: ["Admin"],
     }),
-    
+
     deleteAdmin: builder.mutation({
       query: (id) => {
         return {
@@ -107,8 +115,6 @@ const userSlice = api.injectEndpoints({
       providesTags: ["Employee"],
     }),
   }),
-
-
 });
 
 export const {
@@ -119,8 +125,9 @@ export const {
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
   useGetAllAdminsQuery,
+  useGetSingleEmployeeByIdQuery,
   useCreateAdminMutation,
   useDeleteAdminMutation,
   useGetCompanyProfileQuery,
-  useGetEmployeesForCompanyQuery
+  useGetEmployeesForCompanyQuery,
 } = userSlice;

@@ -5,31 +5,18 @@ const termsAndConditionSlice = api.injectEndpoints({
     updateTermsAndConditions: builder.mutation({
       query: (data) => {
         return {
-          url: `/others/terms-and-condition`,
+          url: `/others`,
           method: "POST",
           body: data,
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-          },
         };
       },
     }),
     termsAndCondition: builder.query({
-      query: (userType) => {
+      query: () => {
         return {
-          url: `/others/terms-and-conditions/${userType}`,
+          url: `/others/terms-and-conditions`,
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("token")
-            )}`,
-          },
         };
-      },
-      transformResponse: ({ data }) => {
-        return data;
       },
     }),
   }),

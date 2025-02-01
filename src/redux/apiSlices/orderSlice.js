@@ -19,7 +19,7 @@ const orderSlice = api.injectEndpoints({
         };
       },
     }),
-    orderStatusChange : builder.mutation({
+    orderStatusChange: builder.mutation({
       query: ({ id, status }) => {
         return {
           method: "PATCH",
@@ -33,7 +33,27 @@ const orderSlice = api.injectEndpoints({
       query: (status, id) => {
         return {
           method: "GET",
-          url: `order/stats/${status}/${id && "companyId" in id ? id.companyId : ""}`,
+          url: `order/stats/${status}/${
+            id && "companyId" in id ? id.companyId : ""
+          }`,
+        };
+      },
+      providesTags: ["Order"],
+    }),
+    getEmployeeOrdersHistory: builder.query({
+      query: (id) => {
+        return {
+          method: "GET",
+          url: `/order/user-order?employeeId=${id}`,
+        };
+      },
+      providesTags: ["Order"],
+    }),
+    getCompanyOrdersHistory: builder.query({
+      query: (id) => {
+        return {
+          method: "GET",
+          url: `/order/user-order?companyId=${id}`,
         };
       },
       providesTags: ["Order"],
@@ -41,4 +61,11 @@ const orderSlice = api.injectEndpoints({
   }),
 });
 
-export const { useOrdersQuery, useOrderProgressQuery, useOrderStatusChangeMutation, useGetOrderStatsForUserQuery } = orderSlice;
+export const {
+  useOrdersQuery,
+  useOrderProgressQuery,
+  useOrderStatusChangeMutation,
+  useGetOrderStatsForUserQuery,
+  useGetEmployeeOrdersHistoryQuery,
+  useGetCompanyOrdersHistoryQuery,
+} = orderSlice;
