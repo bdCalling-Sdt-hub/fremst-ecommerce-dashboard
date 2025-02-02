@@ -23,15 +23,19 @@ import {
   useCreateEmployeeMutation,
   useGetCompanyProfileQuery,
   useGetEmployeesForCompanyQuery,
+  useUpdateEmployeeMutation,
 } from "../../redux/apiSlices/userSlice";
 import toast from "react-hot-toast";
+import { CiEdit } from "react-icons/ci";
 
 const Overview = () => {
   const [searchText, setSearchText] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [file, setFile] = useState(null);
+  const [editItem, setEditItem] = useState(null);
 
+  console.log(editItem);
   console.log(file);
 
   const { data: company, isFetching, refetch } = useGetCompanyProfileQuery();
@@ -42,6 +46,7 @@ const Overview = () => {
   } = useGetEmployeesForCompanyQuery();
 
   const [createEmployee] = useCreateEmployeeMutation();
+  const [updateEmployee] = useUpdateEmployeeMutation();
 
   if (isFetching) {
     return <div>Loading...</div>;
@@ -49,6 +54,8 @@ const Overview = () => {
 
   const companyData = company?.data || {};
   const employeesData = companyEmployees?.data?.data || [];
+
+  console.log("employeesData", employeesData);
 
   const imgUrl =
     companyData?.user?.profile ||
@@ -99,18 +106,35 @@ const Overview = () => {
     formData.append("image", file);
 
     try {
-      const response = await createEmployee(formData).unwrap();
-      console.log(response);
-      if (response.success) {
-        refetch();
-        refetchEmployees();
-        toast.success(response?.message);
+      if (editItem) {
+        const response = await updateEmployee({
+          id: editItem?.user?._id,
+          data: formData,
+        }).unwrap();
+
+        if (response.success) {
+          refetch();
+          refetchEmployees();
+          setEditItem(null);
+          toast.success(response?.message);
+        } else {
+          toast.error(response?.message);
+        }
+      } else {
+        const response = await createEmployee(formData).unwrap();
+        console.log(response);
+        if (response.success) {
+          refetch();
+          refetchEmployees();
+          toast.success(response?.message);
+        } else {
+          toast.error(response?.message);
+        }
       }
     } catch (error) {
       toast.error(error?.data?.message);
     }
 
-    console.log("Employee Data:", data);
     setIsModalOpen(false);
     form.resetFields();
   };
@@ -118,6 +142,38 @@ const Overview = () => {
   const filteredEmployees = employeesData.filter((employee) =>
     employee?.user?.name.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const handleEdit = (record) => {
+    console.log(record);
+    setEditItem(record);
+    form.setFieldsValue({
+      name: record?.user?.name,
+      email: record?.user?.email,
+      contact: record?.user?.contact,
+      streetAddress: record?.user?.address?.streetAddress,
+      city: record?.user?.address?.city,
+      postalCode: record?.user?.address?.postalCode,
+      designation: record?.designation,
+      budget: record?.user?.budget,
+      duration: record?.user?.duration,
+      image: null,
+    });
+
+    form.setFieldsValue({
+      image: [
+        {
+          uid: record._id, // Unique ID for the file
+          name: "current_image.png", // Name of the image
+          status: "done", // Status of the file
+          url: record?.user?.profile?.startsWith("http")
+            ? record?.user?.profile
+            : `${import.meta.env.VITE_BASE_URL}${record?.user?.profile}`,
+        },
+      ],
+    });
+
+    setIsModalOpen(true);
+  };
 
   const columns = [
     {
@@ -167,6 +223,15 @@ const Overview = () => {
               <FaEye size={24} />
             </Button>
           </Link>
+
+          <Button
+            onClick={() => {
+              handleEdit(record);
+            }}
+            className="bg-primary text-white border-none"
+          >
+            <CiEdit size={24} />
+          </Button>
         </Space>
       ),
     },
@@ -318,13 +383,17 @@ const Overview = () => {
                 </Form.Item>
               </div>
 
-              <Form.Item
-                name="password"
-                label="Password *"
-                rules={[{ required: true, message: "Please enter a password" }]}
-              >
-                <Input.Password placeholder="Enter Password" />
-              </Form.Item>
+              {!editItem && (
+                <Form.Item
+                  name="password"
+                  label="Password *"
+                  rules={[
+                    { required: true, message: "Please enter a password" },
+                  ]}
+                >
+                  <Input.Password placeholder="Enter Password" />
+                </Form.Item>
+              )}
             </div>
             <div>
               <Form.Item

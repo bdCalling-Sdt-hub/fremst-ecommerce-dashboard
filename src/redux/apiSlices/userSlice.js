@@ -125,6 +125,17 @@ const userSlice = api.injectEndpoints({
       },
       invalidatesTags: ["Employee"],
     }),
+
+    updateEmployee: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          method: "PATCH",
+          url: `/admin/employee/${id}`,
+          body: data,
+        };
+      },
+      invalidatesTags: ["Employee"],
+    }),
   }),
 });
 
@@ -142,4 +153,5 @@ export const {
   useGetCompanyProfileQuery,
   useGetEmployeesForCompanyQuery,
   useCreateEmployeeMutation,
+  useUpdateEmployeeMutation,
 } = userSlice;
