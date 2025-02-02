@@ -53,8 +53,12 @@ import CompanyOrderPage from "../Pages/Dashboard/CompanyOrderPage";
 const router = createBrowserRouter([
   {
     path: "/",
-    // element: <ProtectedRoute><Main /></ProtectedRoute> ,
-    element: <Main />,
+    element: (
+      <ProtectedRoute>
+        <Main />
+      </ProtectedRoute>
+    ),
+    // element: <Main />,
     children: [
       {
         path: "/users",
