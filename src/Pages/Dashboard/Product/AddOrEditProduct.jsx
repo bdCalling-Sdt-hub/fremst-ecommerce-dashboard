@@ -20,10 +20,10 @@ const AddOrEditProduct = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  const sizeOptions = ["S", "M", "L", "XL", "2XL", "3XL"];
+  // const sizeOptions = ["S", "M", "L", "XL", "2XL", "3XL"];
   const colorOptions = ["Red", "Blue", "Green", "Yellow", "Black", "White"];
-  const brandOptions = ["Fremst", "Zara", "Levis", "Nike", "Puma", "Adidas"];
-  const tagOptions = ["Winter", "Summer", "Spring", "Fall", "Autumn"];
+  // const brandOptions = ["Fremst", "Zara", "Levis", "Nike", "Puma", "Adidas"];
+  // const tagOptions = ["Winter", "Summer", "Spring", "Fall", "Autumn"];
 
   // Fetch categories for dropdown
   const { data: categories, isFetching: isFetchingCategories } =
@@ -272,7 +272,6 @@ const AddOrEditProduct = () => {
                 mode="tags"
                 style={{ width: "100%", height: 40 }}
                 placeholder="Select sizes"
-                options={sizeOptions.map((size) => ({ value: size }))}
               />
             </Form.Item>
             <Form.Item
@@ -418,7 +417,6 @@ const AddOrEditProduct = () => {
                   mode="tags"
                   style={{ width: "100%", height: 40 }}
                   placeholder="Select brands"
-                  options={brandOptions.map((brand) => ({ value: brand }))}
                   tagRender={primaryTagRender}
                 />
               </Form.Item>
@@ -431,7 +429,6 @@ const AddOrEditProduct = () => {
                   mode="tags"
                   style={{ width: "100%", height: 40 }}
                   placeholder="Select tags"
-                  options={tagOptions.map((tag) => ({ value: tag }))}
                   tagRender={primaryTagRender}
                 />
               </Form.Item>

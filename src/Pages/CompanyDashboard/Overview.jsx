@@ -261,7 +261,12 @@ const Overview = () => {
               <MdOutlineLocalPhone /> {companyData?.user?.contact}
             </p>
             <p className="text-gray-600 text-lg flex items-center gap-2">
-              <FaLocationDot /> {companyData?.user?.address}
+              <FaLocationDot />{" "}
+              {companyData?.user?.address
+                ? companyData?.user?.address?.streetAddress
+                  ? `${companyData?.user?.address?.streetAddress} ${companyData?.user?.address?.city} ${companyData?.user?.address?.postalCode}`
+                  : ""
+                : "N/A"}
             </p>
           </div>
         </div>

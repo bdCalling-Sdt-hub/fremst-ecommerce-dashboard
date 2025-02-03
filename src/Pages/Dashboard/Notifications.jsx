@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { ConfigProvider, Pagination } from "antd";
 import Title from "../../components/common/Title";
-import { useNotificationQuery } from "../../redux/apiSlices/notificationSlice";
-import rentMeLogo from "../../assets/navLogo.png";
+import {
+  useNotificationQuery,
+  useReadNotificationMutation,
+} from "../../redux/apiSlices/notificationSlice";
+import moment from "moment";
 
 const notificationsData = [
   {
@@ -74,25 +77,34 @@ const notificationsData = [
 const Notifications = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const isLoading = false;
-  // const { data: notifications, isLoading } = useNotificationQuery();
+
+  const { data: notifications, isLoading } = useNotificationQuery();
+  const [readNotification] = useReadNotificationMutation();
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={rentMeLogo} alt="" />
+        <h1>Loading...</h1>
       </div>
     );
   }
-  const notifications = [];
-  const notificationData = notifications.data;
+
+  const notificationData = notifications?.data;
 
   console.log(notificationData);
 
-  const paginatedData = notificationsData.slice(
+  const paginatedData = notificationData.slice(
     (page - 1) * pageSize,
     page * pageSize
   );
+
+  const handleReadNotification = async (id) => {
+    try {
+      await readNotification(id).unwrap();
+    } catch (error) {
+      console.error("Error reading notification:", error);
+    }
+  };
 
   return (
     <div>
@@ -104,32 +116,31 @@ const Notifications = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-5 bg-white p-4 rounded-lg">
-        {paginatedData.map((notification) => (
-          <div
-            key={notification.id}
-            className="border-b-[1px] pb-2 border-[#d9d9d9] flex items-center gap-3"
-          >
-            <img
-              style={{
-                height: "50px",
-                width: "50px",
-                borderRadius: "100%",
-                border: "2px solid gray",
-              }}
-              src={notification.avatar}
-              alt={`${notification.sender} avatar`}
-            />
-            <div>
-              <p>
-                <span className="font-bold">{notification.sender}</span>:{" "}
-                {notification.message}
-              </p>
-              <p style={{ color: "gray", marginTop: "4px" }}>
-                {notification.timestamp}
-              </p>
+        {paginatedData
+          ?.slice()
+          ?.reverse()
+          ?.map((notification) => (
+            <div
+              key={notification.id}
+              className="border-b-[1px] pb-2 border-[#d9d9d9] flex items-center gap-3"
+            >
+              <div
+                onClick={() => handleReadNotification(notification._id)}
+                className={`${
+                  notification.isRead === false && `bg-slate-200`
+                } p-3 mb-2 rounded-md cursor-pointer`}
+              >
+                <p>
+                  <span className="font-bold">{notification.title}</span>
+                  <br />
+                  {notification.description}
+                </p>
+                <p style={{ color: "gray", marginTop: "4px" }}>
+                  {moment(notification.createdAt).fromNow()}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <div className="flex items-center justify-center mt-6">

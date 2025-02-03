@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Badge, Select } from "antd";
 import logo from "../../assets/randomProfile2.jpg";
 import i18next from "i18next";
 import { useFetchUserProfileQuery } from "../../redux/apiSlices/authSlice";
+import { io } from "socket.io-client";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const { Option } = Select;
@@ -12,13 +13,31 @@ const { Option } = Select;
 const Header = () => {
   const { data: profileData, isLoading, refetch } = useFetchUserProfileQuery();
 
-  const { name, profile } =
+  const { name, profile, role } =
     profileData?.data?.user && profileData?.data?.user
       ? profileData?.data?.user
       : profileData?.data || {};
 
   useEffect(() => {
     refetch();
+  }, []);
+
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    const socket = io("http://10.0.80.49:5010", {
+      query: {
+        token: localStorage.getItem("authToken"),
+      },
+    });
+    socket.on("notification::asd98234!3454@", (notification) => {
+      console.log(notification);
+      setNotificationCount((prev) => prev + 1);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
@@ -60,9 +79,11 @@ const Header = () => {
       </Select> */}
 
       <div>
-        <Badge count={5}>
-          <FaRegBell style={{ fontSize: "24px", color: "black" }} />
-        </Badge>
+        <Link to="/notification">
+          <Badge count={notificationCount} color="red">
+            <FaRegBell size={25} />
+          </Badge>
+        </Link>
       </div>
       {/* Profile Section */}
       <div
@@ -95,7 +116,7 @@ const Header = () => {
           >
             {name || "Guest"}
           </h2>
-          <p className="text-sm">Super Admin</p>
+          <p className="text-sm">{role}</p>
         </div>
       </div>
     </div>

@@ -13,11 +13,13 @@ import { Link } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { IoMdAdd } from "react-icons/io";
 import { FaEye } from "react-icons/fa6";
+import randomImg from "../../assets/randomProfile2.jpg";
 import {
   useGetAllCompaniesQuery,
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
 } from "../../redux/apiSlices/userSlice";
+import toast from "react-hot-toast";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -28,8 +30,8 @@ const Users = () => {
   const [currentCompany, setCurrentCompany] = useState(null);
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [createCompany, { isLoading: isCreating }] = useCreateCompanyMutation();
-  const [updateCompany, { isLoading: isUpdating }] = useUpdateCompanyMutation();
+  const [createCompany] = useCreateCompanyMutation();
+  const [updateCompany] = useUpdateCompanyMutation();
 
   const { data: allCompanies, isFetching } = useGetAllCompaniesQuery();
   if (isFetching || loading) {
@@ -37,7 +39,7 @@ const Users = () => {
   }
 
   const companies = allCompanies?.data?.data;
-  // console.log(companies);
+  console.log(companies);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -54,7 +56,9 @@ const Users = () => {
         name: company.user.name,
         email: company.user.email,
         contact: company.user.contact,
-        address: company.user.address,
+        streetAddress: company.user.address?.streetAddress,
+        city: company.user.address?.city,
+        postalCode: company.user.address?.postalCode,
         logo: [],
       });
 
@@ -83,23 +87,48 @@ const Users = () => {
       const values = await form.validateFields();
 
       const formData = new FormData();
-      formData.append("role", "company");
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === "logo" && fileList.length > 0) {
-          formData.append("image", fileList[0].originFileObj);
-        } else {
-          formData.append(key, value);
-        }
-      });
 
-      if (currentCompany) {
-        await updateCompany({ id: currentCompany._id, data: formData });
-      } else {
-        await createCompany(formData);
+      const data = {
+        name: values.name,
+        email: values.email,
+        contact: values.contact,
+        address: {
+          streetAddress: values.streetAddress,
+          city: values.city,
+          postalCode: values.postalCode,
+        },
+        role: "company",
+        password: values.password,
+      };
+
+      formData.append("data", JSON.stringify(data));
+
+      if (fileList.length > 0 && fileList[0].originFileObj) {
+        formData.append("image", fileList[0].originFileObj);
       }
 
-      setIsModalVisible(false);
-      form.resetFields();
+      if (currentCompany) {
+        const response = await updateCompany({
+          id: currentCompany._id,
+          data: formData,
+        }).unwrap();
+        if (response?.success) {
+          toast.success(response?.message || "Company updated successfully");
+          setIsModalVisible(false);
+          form.resetFields();
+        } else {
+          toast.error(response?.message);
+        }
+      } else {
+        const response = await createCompany(formData).unwrap();
+        if (response?.success) {
+          toast.success(response?.message || "Company added successfully");
+          setIsModalVisible(false);
+          form.resetFields();
+        } else {
+          toast.error(response?.message);
+        }
+      }
     } catch (error) {
       console.error("Error handling form submission:", error);
     } finally {
@@ -132,9 +161,11 @@ const Users = () => {
           <img
             className="object-cover rounded-md"
             src={
-              record?.user?.profile?.startsWith("https")
-                ? record?.user?.profile
-                : `${import.meta.env.VITE_BASE_URL}${record?.user?.profile}`
+              record?.user?.profile
+                ? record?.user?.profile?.startsWith("https")
+                  ? record?.user?.profile
+                  : `${import.meta.env.VITE_BASE_URL}${record?.user?.profile}`
+                : randomImg
             }
             alt={record.company}
             style={{ width: 50, height: 50, marginRight: 10 }}
@@ -263,18 +294,36 @@ const Users = () => {
               className="bg-gray-50"
             />
           </Form.Item>
-          <Form.Item
-            name="address"
-            label="Company Address"
-            rules={[
-              { required: true, message: "Please input the company address!" },
-            ]}
-          >
-            <Input.TextArea
-              placeholder="Enter company address"
-              className="bg-gray-50"
-            />
-          </Form.Item>
+          <div className="flex gap-2">
+            <Form.Item
+              name="streetAddress"
+              label="Street Address"
+              rules={[
+                { required: true, message: "Please input the street address!" },
+              ]}
+            >
+              <Input
+                placeholder="Enter street address"
+                className="bg-gray-50"
+              />
+            </Form.Item>
+            <Form.Item
+              name="city"
+              label="City"
+              rules={[{ required: true, message: "Please input the city!" }]}
+            >
+              <Input placeholder="Enter city" className="bg-gray-50" />
+            </Form.Item>
+            <Form.Item
+              name="postalCode"
+              label="Postal Code"
+              rules={[
+                { required: true, message: "Please input the postal code!" },
+              ]}
+            >
+              <Input placeholder="Enter postal code" className="bg-gray-50" />
+            </Form.Item>
+          </div>
           <Form.Item
             name="password"
             label="Password"
@@ -291,16 +340,7 @@ const Users = () => {
               disabled={!!currentCompany}
             />
           </Form.Item>
-          <Form.Item
-            name="logo"
-            label="Company Logo"
-            rules={[
-              {
-                required: !currentCompany,
-                message: "Please upload the company logo!",
-              },
-            ]}
-          >
+          <Form.Item name="logo" label="Company Logo">
             <Upload
               name="logo"
               listType="picture"

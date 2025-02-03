@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Upload, Table, Space } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { MdEditSquare } from "react-icons/md";
-import { useAddCategoryMutation, useGetAllCategoriesQuery, useUpdateCategoryMutation } from "../../../redux/apiSlices/Category";
+import {
+  useAddCategoryMutation,
+  useGetAllCategoriesQuery,
+  useUpdateCategoryMutation,
+} from "../../../redux/apiSlices/Category";
 import toast from "react-hot-toast";
 
 const AddCategory = () => {
@@ -11,11 +15,11 @@ const AddCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [form] = Form.useForm();
   const [createCategory, { isLoading: isCreating }] = useAddCategoryMutation();
-  const [updateCategory, { isLoading: isUpdating }] = useUpdateCategoryMutation();
+  const [updateCategory, { isLoading: isUpdating }] =
+    useUpdateCategoryMutation();
   const { data, isLoading, error } = useGetAllCategoriesQuery();
 
   const categories = data?.data || [];
-  const BASE_URL = "http://10.0.80.49:5010"; // Update as needed
 
   useEffect(() => {
     // When a category is selected for editing, set the form values.
@@ -31,9 +35,9 @@ const AddCategory = () => {
 
       setFileList([
         {
-          uid: '-1',
-          name: 'image.png',
-          status: 'done',
+          uid: "-1",
+          name: "image.png",
+          status: "done",
           url: imageUrl,
         },
       ]);
@@ -61,8 +65,9 @@ const AddCategory = () => {
       updateCategory({ id: selectedCategory._id, data: formData })
         .unwrap()
         .then((response) => {
-          toast.success(response?.data?.message || "Category updated successfully");
-
+          toast.success(
+            response?.data?.message || "Category updated successfully"
+          );
         })
         .catch((error) => {
           toast.error(error?.data?.message || "Failed to update category");
@@ -72,7 +77,9 @@ const AddCategory = () => {
       createCategory(formData)
         .unwrap()
         .then((response) => {
-          toast.success(response?.data?.message || "Category created successfully");
+          toast.success(
+            response?.data?.message || "Category created successfully"
+          );
           setFileList([]); // Reset file list
           form.resetFields(); // Reset form fields
         })
@@ -106,12 +113,16 @@ const AddCategory = () => {
       dataIndex: "image",
       key: "image",
       render: (image) => (
-        <div className="bg-gray-200 p-3 w-24 h-20 flex items-center justify-center rounded-lg">
+        <div className="bg-gray-200 w-24 h-24 flex items-center justify-center rounded-lg">
           <img
             className="rounded-xl object-cover w-full h-full"
-            src={image.startsWith("http") ? image : `${BASE_URL}${image}`}
+            src={
+              image.startsWith("http")
+                ? image
+                : `${import.meta.env.VITE_BASE_URL}${image}`
+            }
             alt="category"
-            style={{ width: 50, height: 50 }}
+            style={{ width: 90, height: 90 }}
           />
         </div>
       ),
@@ -154,14 +165,21 @@ const AddCategory = () => {
             <Form.Item
               name="categoryName"
               label="Category Name"
-              rules={[{ required: true, message: "Please input the category name!" }]}
+              rules={[
+                { required: true, message: "Please input the category name!" },
+              ]}
             >
               <Input placeholder="Enter category name" style={{ height: 40 }} />
             </Form.Item>
             <Form.Item
               name="categoryImage"
               label="Category Image"
-              rules={[{ required: !selectedCategory, message: "Please upload a category image!" }]}
+              rules={[
+                {
+                  required: !selectedCategory,
+                  message: "Please upload a category image!",
+                },
+              ]}
             >
               <Upload
                 listType="picture-card"
