@@ -116,31 +116,28 @@ const Notifications = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-5 bg-white p-4 rounded-lg">
-        {paginatedData
-          ?.slice()
-          ?.reverse()
-          ?.map((notification) => (
+        {paginatedData?.map((notification) => (
+          <div
+            key={notification.id}
+            className="border-b-[1px] pb-2 border-[#d9d9d9] flex items-center gap-3"
+          >
             <div
-              key={notification.id}
-              className="border-b-[1px] pb-2 border-[#d9d9d9] flex items-center gap-3"
+              onClick={() => handleReadNotification(notification._id)}
+              className={`${
+                notification.isRead === false && `bg-slate-200`
+              } p-3 mb-2 rounded-md cursor-pointer`}
             >
-              <div
-                onClick={() => handleReadNotification(notification._id)}
-                className={`${
-                  notification.isRead === false && `bg-slate-200`
-                } p-3 mb-2 rounded-md cursor-pointer`}
-              >
-                <p>
-                  <span className="font-bold">{notification.title}</span>
-                  <br />
-                  {notification.description}
-                </p>
-                <p style={{ color: "gray", marginTop: "4px" }}>
-                  {moment(notification.createdAt).fromNow()}
-                </p>
-              </div>
+              <p>
+                <span className="font-bold">{notification.title}</span>
+                <br />
+                {notification.description}
+              </p>
+              <p style={{ color: "gray", marginTop: "4px" }}>
+                {moment(notification.createdAt).fromNow()}
+              </p>
             </div>
-          ))}
+          </div>
+        ))}
       </div>
 
       <div className="flex items-center justify-center mt-6">
