@@ -88,6 +88,7 @@ const Overview = () => {
     // }
 
     const formData = new FormData();
+
     const data = {
       name: values.name,
       email: values.email,
@@ -99,12 +100,18 @@ const Overview = () => {
       },
       password: values.password,
       designation: values.designation,
-      budget: Number(values.budget),
-      duration: Number(values.duration),
       role: "employee",
       company: companyData?._id,
       isBudgetUpdated: changeBudget,
     };
+
+    if (changeBudget) {
+      data.budget = Number(values.budget);
+      data.duration = Number(values.duration);
+    } else {
+      delete data.budget;
+      delete data.duration;
+    }
 
     formData.append("data", JSON.stringify(data));
     formData.append("image", file);
@@ -465,9 +472,6 @@ const Overview = () => {
                     className="w-1/2"
                     name="duration"
                     label="Budget Duration"
-                    rules={[
-                      { required: true, message: "Please select duration" },
-                    ]}
                   >
                     <Select disabled={!changeBudget} defaultValue="6 Months">
                       <Option value="1">1 Months</Option>

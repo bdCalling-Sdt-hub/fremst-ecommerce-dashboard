@@ -39,7 +39,7 @@ const EmployeeProfile = () => {
   const employeeData = getEmployeeData?.data || [];
   const orderHistory = getEmployeeOrders?.data?.data || [];
 
-  console.log(orderHistory);
+  console.log(employeeData);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
