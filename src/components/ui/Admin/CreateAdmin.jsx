@@ -20,6 +20,12 @@ const CreateAdmin = ({ open, setOpen }) => {
         jsonPayload[key] = values[key];
       }
 
+      jsonPayload["address"] = {
+        streetAddress: "N/A",
+        city: "N/A",
+        postalCode: "N/A",
+      };
+
       if (fileList.length > 0 && fileList[0].originFileObj) {
         formData.append("image", fileList[0].originFileObj);
       }
@@ -51,7 +57,7 @@ const CreateAdmin = ({ open, setOpen }) => {
   return (
     <Modal
       title="Create Admin"
-      visible={open}
+      open={open}
       onOk={handleOk}
       onCancel={handleCancel}
     >
@@ -76,12 +82,11 @@ const CreateAdmin = ({ open, setOpen }) => {
         <Form.Item
           name="contact"
           label="Contact"
-          rules={[
-            { required: true, message: "Please input the contact!" },
-          ]}
+          rules={[{ required: true, message: "Please input the contact!" }]}
         >
           <Input />
         </Form.Item>
+
         <Form.Item
           name="password"
           label="Password"
@@ -102,11 +107,7 @@ const CreateAdmin = ({ open, setOpen }) => {
             <Option value="super-admin">Super Admin</Option>
           </Select>
         </Form.Item>
-        <Form.Item
-          name="profile"
-          label="Profile Image"
-          rules={[{ required: true, message: "Please upload a profile image!" }]}
-        >
+        <Form.Item name="profile" label="Profile Image">
           <Upload
             listType="picture-card"
             maxCount={1}

@@ -20,6 +20,7 @@ import { GiMoneyStack } from "react-icons/gi";
 import { useGetSingleEmployeeByIdQuery } from "../../redux/apiSlices/userSlice";
 import { useParams } from "react-router-dom";
 import { useGetEmployeeOrdersHistoryQuery } from "../../redux/apiSlices/orderSlice";
+import Currency from "../../utils/Currency";
 
 const EmployeeProfile = () => {
   const [searchText, setSearchText] = useState("");
@@ -88,7 +89,11 @@ const EmployeeProfile = () => {
       title: "Price",
       dataIndex: "totalAmount",
       key: "totalAmount",
-      render: (text) => <span>${text?.toFixed(2)}</span>,
+      render: (text) => (
+        <span>
+          {text?.toFixed(2)} <Currency />
+        </span>
+      ),
     },
     {
       title: "Status",
@@ -192,7 +197,10 @@ const EmployeeProfile = () => {
           </h1>
           <div className="p-5">
             <h1 className="text-lg">
-              Assigned Budget: <span>${employeeData?.totalBudget}</span>
+              Assigned Budget:{" "}
+              <span>
+                {employeeData?.totalBudget} <Currency />
+              </span>
             </h1>
             <h1 className="text-lg">
               Assigned Duration: <span>{employeeData?.duration} Months</span>
@@ -223,7 +231,9 @@ const EmployeeProfile = () => {
               <IoIosCalculator size={40} />
             </div>
             <h1 className="text-lg text-gray-600">Total Budget</h1>
-            <h1 className="text-2xl font-bold">${employeeData?.totalBudget}</h1>
+            <h1 className="text-2xl font-bold">
+              ${employeeData?.totalBudget} <Currency />
+            </h1>
           </div>
           <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
             <div className="p-6 rounded-2xl bg-[#edf6fd]">
@@ -240,7 +250,7 @@ const EmployeeProfile = () => {
             </div>
             <h1 className="text-lg text-gray-600">Remaining Budget</h1>
             <h1 className="text-2xl font-bold">
-              ${employeeData?.budgetLeft?.toFixed(2)}
+              {employeeData?.budgetLeft?.toFixed(2)} <Currency />
             </h1>
           </div>
         </div>

@@ -1,12 +1,11 @@
 import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
-import rentMeLogo from "../../assets/navLogo.png";
+import rentMeLogo from "../../assets/logo.png";
 
 import toast from "react-hot-toast";
 import { useChangePasswordMutation } from "../../redux/apiSlices/authSlice";
 
 const ChangePassword = () => {
-
   const [form] = Form.useForm();
   const [errorMessages, setErrorMessages] = useState({
     newPassError: "",
@@ -49,7 +48,9 @@ const ChangePassword = () => {
           toast.error("Password change failed");
         }
       } catch (err) {
-        toast.error(err?.data?.message || "An error occurred while changing the password");
+        toast.error(
+          err?.data?.message || "An error occurred while changing the password"
+        );
       }
     }
   };

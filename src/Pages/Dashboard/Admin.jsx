@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import CreateAdmin from "../../components/ui/Admin/CreateAdmin";
 import Title from "../../components/common/Title";
-import { useDeleteAdminMutation, useGetAllAdminsQuery } from "../../redux/apiSlices/userSlice";
+import {
+  useDeleteAdminMutation,
+  useGetAllAdminsQuery,
+} from "../../redux/apiSlices/userSlice";
 import toast from "react-hot-toast";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -15,6 +18,7 @@ const Admin = () => {
   const { data, isFetching } = useGetAllAdminsQuery();
 
   const admins = data?.data || [];
+  console.log(admins);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -24,7 +28,8 @@ const Admin = () => {
     //show a alert before deleting
     Modal.confirm({
       title: "Are you sure?",
-      content: "Do you really want to delete this admin? This action cannot be undone.",
+      content:
+        "Do you really want to delete this admin? This action cannot be undone.",
       okText: "Yes, Delete",
       cancelText: "Cancel",
       okType: "danger",
@@ -38,8 +43,6 @@ const Admin = () => {
         }
       },
     });
-
-
   };
 
   const filteredData = admins.filter((item) =>
@@ -57,16 +60,27 @@ const Admin = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text, record) => (
-        <Space>
-          <img
-            src={record?.profile?.startsWith("http") ? record.profile : `${BASE_URL}${record.profile}`}
-            alt={record.name}
-            style={{ width: 50, height: 50, borderRadius: "50%" }}
-          />
-          <span>{record.name}</span>
-        </Space>
-      ),
+      render: (text, record) => {
+        console.log(
+          record?.profile?.startsWith("http")
+            ? record.profile
+            : `${BASE_URL}${record.profile}`
+        );
+        return (
+          <Space>
+            <img
+              src={
+                record?.profile?.startsWith("http")
+                  ? record.profile
+                  : `${BASE_URL}${record.profile}`
+              }
+              alt={record.name}
+              style={{ width: 50, height: 50, borderRadius: "50%" }}
+            />
+            <span>{record.name}</span>
+          </Space>
+        );
+      },
     },
     {
       title: "Email",

@@ -18,7 +18,7 @@ const AddBanners = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={rentMeLogo} alt="" />
+        <h1>Loading...</h1>
       </div>
     );
   }

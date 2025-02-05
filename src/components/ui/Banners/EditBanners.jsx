@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import whiteBg from "../../../assets/whiteBG.png";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import toast from "react-hot-toast";
-import rentMeLogo from "../../../assets/navLogo.png";
+import logo from "../../../assets/logo.png";
 
 const EditBanners = () => {
   const navigate = useNavigate();
@@ -76,7 +76,7 @@ const EditBanners = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={rentMeLogo} alt="" />
+        <img src={logo} alt="" />
       </div>
     );
   }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Badge, Select } from "antd";
 import logo from "../../assets/randomProfile2.jpg";
-import i18next from "i18next";
+
 import { useFetchUserProfileQuery } from "../../redux/apiSlices/authSlice";
 import { io } from "socket.io-client";
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -13,10 +13,9 @@ const { Option } = Select;
 const Header = () => {
   const { data: profileData, isLoading, refetch } = useFetchUserProfileQuery();
 
-  const { name, profile, role } =
-    profileData?.data?.user && profileData?.data?.user
-      ? profileData?.data?.user
-      : profileData?.data || {};
+  const profile = profileData?.data;
+
+  console.log(profile);
 
   useEffect(() => {
     refetch();
@@ -41,8 +40,6 @@ const Header = () => {
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
-
-  console.log(profileData?.data);
 
   return (
     <div className="flex items-center justify-end gap-7 h-full">
@@ -99,9 +96,11 @@ const Header = () => {
       >
         <img
           src={
-            profile?.startsWith("https")
-              ? profile
-              : `${import.meta.env.VITE_BASE_URL}${profile}`
+            profile?.user?.profile
+              ? profile?.user?.profile?.startsWith("https")
+                ? profile?.user?.profile
+                : `${import.meta.env.VITE_BASE_URL}${profile?.user?.profile}`
+              : logo
           }
           alt={name || "User Profile"}
           className="w-12 h-12 rounded-lg object-cover"
@@ -114,9 +113,9 @@ const Header = () => {
               fontWeight: "600",
             }}
           >
-            {name || "Guest"}
+            {profile?.user?.name || "Guest"}
           </h2>
-          <p className="text-sm">{role}</p>
+          <p className="text-sm">{profile?.user?.role}</p>
         </div>
       </div>
     </div>

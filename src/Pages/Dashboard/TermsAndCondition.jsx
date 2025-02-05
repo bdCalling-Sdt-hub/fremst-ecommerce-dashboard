@@ -6,7 +6,7 @@ import {
   useUpdateTermsAndConditionsMutation,
 } from "../../redux/apiSlices/termsAndConditionSlice";
 import toast from "react-hot-toast";
-import rentMeLogo from "../../assets/navLogo.png";
+import rentMeLogo from "../../assets/logo.png";
 
 const TermsAndCondition = () => {
   const editor = useRef(null);

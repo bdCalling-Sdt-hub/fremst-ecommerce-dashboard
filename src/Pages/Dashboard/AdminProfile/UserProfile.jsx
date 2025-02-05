@@ -6,14 +6,12 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import {
-  useFetchAdminProfileQuery,
   useFetchUserProfileQuery,
-  useUpdateAdminProfileMutation,
   useUpdateUserProfileMutation,
 } from "../../../redux/apiSlices/authSlice";
 import logo from "../../../assets/randomProfile2.jpg";
 import toast from "react-hot-toast";
-import rentMeLogo from "../../../assets/navLogo.png";
+import rentMeLogo from "../../../assets/logo.png";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -26,11 +24,13 @@ const PersonalInfo = () => {
   const [updateUserProfile] = useUpdateUserProfileMutation();
 
   const { data, isLoading, error } = useFetchUserProfileQuery();
-  const { name, profile, email, address, contact: phoneNumber } =
-    data?.data || {};
-
-
-
+  const {
+    name,
+    profile,
+    email,
+    address,
+    contact: phoneNumber,
+  } = data?.data || {};
 
   useEffect(() => {
     if (data) {
@@ -130,13 +130,13 @@ const PersonalInfo = () => {
             >
               <Input readOnly className="py-3 bg-gray-100 rounded-xl" />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               name="address"
               label="Address"
               rules={[{ required: true, message: "Please enter your Address" }]}
             >
               <Input className="py-3 bg-gray-100 rounded-xl" />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item
               label="Phone"

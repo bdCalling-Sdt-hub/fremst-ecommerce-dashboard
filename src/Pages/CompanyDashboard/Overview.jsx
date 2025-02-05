@@ -9,6 +9,7 @@ import {
   Modal,
   Upload,
   Select,
+  Checkbox,
 } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { BiLeftArrowAlt } from "react-icons/bi";
@@ -27,6 +28,7 @@ import {
 } from "../../redux/apiSlices/userSlice";
 import toast from "react-hot-toast";
 import { CiEdit } from "react-icons/ci";
+import Currency from "../../utils/Currency";
 
 const Overview = () => {
   const [searchText, setSearchText] = useState("");
@@ -34,9 +36,10 @@ const Overview = () => {
   const [form] = Form.useForm();
   const [file, setFile] = useState(null);
   const [editItem, setEditItem] = useState(null);
+  const [changeBudget, setChangeBudget] = useState(false);
 
   console.log(editItem);
-  console.log(file);
+  console.log(changeBudget);
 
   const { data: company, isFetching, refetch } = useGetCompanyProfileQuery();
   const {
@@ -79,10 +82,10 @@ const Overview = () => {
     console.log(values);
     const file = values.image?.[0]?.originFileObj;
 
-    if (!file) {
-      toast.error("Please upload a valid image");
-      return;
-    }
+    // if (!file) {
+    //   toast.error("Please upload a valid image");
+    //   return;
+    // }
 
     const formData = new FormData();
     const data = {
@@ -100,6 +103,7 @@ const Overview = () => {
       duration: Number(values.duration),
       role: "employee",
       company: companyData?._id,
+      isBudgetUpdated: changeBudget,
     };
 
     formData.append("data", JSON.stringify(data));
@@ -154,7 +158,7 @@ const Overview = () => {
       city: record?.user?.address?.city,
       postalCode: record?.user?.address?.postalCode,
       designation: record?.designation,
-      budget: record?.user?.budget,
+      budget: record?.budget,
       duration: record?.user?.duration,
       image: null,
     });
@@ -196,7 +200,7 @@ const Overview = () => {
       title: "Budget Left",
       dataIndex: "budgetLeft",
       key: "budgetLeft",
-      render: (value) => value?.toFixed(2), // Ensures formatting only when rendering
+      render: (value) => <span>{value} kr</span>, // Ensures formatting only when rendering
     },
     {
       title: "Expire On",
@@ -298,7 +302,7 @@ const Overview = () => {
               </div>
               <h1 className="text-lg text-gray-600">Total budget</h1>
               <h1 className="text-2xl font-bold">
-                {companyData?.totalBudget || 0}
+                {companyData?.totalBudget || 0} <Currency />
               </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-8 rounded-2xl shadow-md py-6 gap-3 items-center">
@@ -307,7 +311,7 @@ const Overview = () => {
               </div>
               <h1 className="text-lg text-gray-600">Total Spent</h1>
               <h1 className="text-2xl font-bold">
-                {companyData?.totalSpentBudget || 0}
+                {companyData?.totalSpentBudget || 0} <Currency />
               </h1>
             </div>
           </div>
@@ -352,7 +356,7 @@ const Overview = () => {
             <div className="w-1/2">
               <Form.Item
                 name="name"
-                label="Employee Name *"
+                label="Employee Name"
                 rules={[{ required: true, message: "Please enter the name" }]}
               >
                 <Input placeholder="Enter Name" />
@@ -360,7 +364,7 @@ const Overview = () => {
 
               <Form.Item
                 name="email"
-                label="Email *"
+                label="Email"
                 rules={[
                   {
                     required: true,
@@ -391,7 +395,7 @@ const Overview = () => {
               {!editItem && (
                 <Form.Item
                   name="password"
-                  label="Password *"
+                  label="Password"
                   rules={[
                     { required: true, message: "Please enter a password" },
                   ]}
@@ -403,8 +407,8 @@ const Overview = () => {
             <div>
               <Form.Item
                 name="image"
-                label="Employee Image *"
-                rules={[{ required: true, message: "Please upload an image" }]}
+                label="Employee Image"
+                // rules={[{ required: true, message: "Please upload an image" }]}
                 valuePropName="fileList"
                 getValueFromEvent={(e) => e?.fileList} // Ensures form receives fileList
               >
@@ -424,7 +428,7 @@ const Overview = () => {
 
               <Form.Item
                 name="designation"
-                label="Designation *"
+                label="Designation"
                 rules={[
                   { required: true, message: "Please enter a designation" },
                 ]}
@@ -432,40 +436,56 @@ const Overview = () => {
                 <Input placeholder="Enter employee Designation" />
               </Form.Item>
 
-              <div className="flex w-full gap-3">
-                <Form.Item
-                  name="budget"
-                  label="Budget Amount *"
-                  rules={[
-                    { required: true, message: "Please enter budget amount" },
-                    {
-                      pattern: new RegExp(/^[0-9]+$/),
-                      message: "Only numbers are allowed",
-                    },
-                  ]}
+              <div className="flex flex-col gap-0">
+                <div className="flex w-full gap-3">
+                  <div className="w-1/2">
+                    <Form.Item
+                      name="budget"
+                      label="Budget Amount"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter budget amount",
+                        },
+                        {
+                          pattern: new RegExp(/^[0-9]+$/),
+                          message: "Only numbers are allowed",
+                        },
+                      ]}
+                    >
+                      <Input
+                        disabled={!changeBudget}
+                        type="number"
+                        placeholder="Enter Employee Budget"
+                        min={0}
+                      />
+                    </Form.Item>
+                  </div>
+                  <Form.Item
+                    className="w-1/2"
+                    name="duration"
+                    label="Budget Duration"
+                    rules={[
+                      { required: true, message: "Please select duration" },
+                    ]}
+                  >
+                    <Select disabled={!changeBudget} defaultValue="6 Months">
+                      <Option value="1">1 Months</Option>
+                      <Option value="3">3 Months</Option>
+                      <Option value="6">6 Months</Option>
+                      <Option value="12">12 Months</Option>
+                      <Option value="18">18 Months</Option>
+                      <Option value="24">24 Months</Option>
+                    </Select>
+                  </Form.Item>
+                </div>
+                <Checkbox
+                  style={{ marginLeft: "10px" }}
+                  checked={changeBudget}
+                  onChange={(e) => setChangeBudget(e.target.checked)}
                 >
-                  <Input
-                    type="number"
-                    placeholder="Enter Employee Budget"
-                    min={0}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name="duration"
-                  label="Budget Duration *"
-                  rules={[
-                    { required: true, message: "Please select duration" },
-                  ]}
-                >
-                  <Select defaultValue="6 Months">
-                    <Option value="1">1 Months</Option>
-                    <Option value="3">3 Months</Option>
-                    <Option value="6">6 Months</Option>
-                    <Option value="12">12 Months</Option>
-                    <Option value="18">18 Months</Option>
-                    <Option value="24">24 Months</Option>
-                  </Select>
-                </Form.Item>
+                  Change Budget & Duration
+                </Checkbox>
               </div>
               <div
                 style={{
