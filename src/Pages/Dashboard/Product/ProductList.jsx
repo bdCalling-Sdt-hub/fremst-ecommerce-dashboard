@@ -3,17 +3,21 @@ import { Table, Input, Button, Space, Select } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { MdAdd, MdDelete, MdEditSquare } from "react-icons/md";
-import { useDeleteProductMutation, useGetProductsQuery } from "../../../redux/apiSlices/productSlice";
+import {
+  useDeleteProductMutation,
+  useGetProductsQuery,
+} from "../../../redux/apiSlices/productSlice";
 import moment from "moment/moment";
 import toast from "react-hot-toast";
+import Currency from "../../../utils/Currency";
 
 const { Option } = Select;
 
 const ProductList = () => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation()
-  const { data, isLoading, refetch} = useGetProductsQuery();
+  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
+  const { data, isLoading, refetch } = useGetProductsQuery();
 
   const products = data?.data || [];
 
@@ -65,6 +69,11 @@ const ProductList = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (text) => (
+        <p>
+          {text} <Currency />
+        </p>
+      ),
     },
     {
       title: "Status",
@@ -73,9 +82,7 @@ const ProductList = () => {
       render: (text, record) => (
         <span
           className={`${
-            record.availability === true
-              ? "text-green-600"
-              : "text-red-600"
+            record.availability === true ? "text-green-600" : "text-red-600"
           } px-2 py-1 rounded`}
         >
           {record.availability == true ? "Available" : "Unavailable"}
@@ -96,7 +103,7 @@ const ProductList = () => {
           <Link to={`/product/${record._id}`}>
             <MdEditSquare size={24} className="text-green-600" />
           </Link>
-          <Button  onClick={() => handleDelete(record._id)}>
+          <Button onClick={() => handleDelete(record._id)}>
             <MdDelete size={24} className="text-red-600" />
           </Button>
         </Space>

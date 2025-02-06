@@ -21,6 +21,8 @@ const AddCategory = () => {
 
   const categories = data?.data || [];
 
+  console.log(categories);
+
   useEffect(() => {
     // When a category is selected for editing, set the form values.
     if (selectedCategory) {
@@ -117,7 +119,7 @@ const AddCategory = () => {
           <img
             className="rounded-xl object-cover w-full h-full"
             src={
-              image.startsWith("http")
+              image?.startsWith("http")
                 ? image
                 : `${import.meta.env.VITE_BASE_URL}${image}`
             }
@@ -217,7 +219,7 @@ const AddCategory = () => {
           <Table
             columns={columns}
             dataSource={filteredCategories}
-            rowKey="id"
+            rowKey="_id"
             loading={isLoading}
           />
         </div>

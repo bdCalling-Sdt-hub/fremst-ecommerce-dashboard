@@ -75,13 +75,17 @@ const Header = () => {
         </Option>
       </Select> */}
 
-      <div>
-        <Link to="/notification">
-          <Badge count={notificationCount} color="red">
-            <FaRegBell size={25} />
-          </Badge>
-        </Link>
-      </div>
+      {profile?.role === "admin" ||
+        (profile?.role === "super-admin" && (
+          <div>
+            <Link to="/notification">
+              <Badge count={notificationCount} color="red">
+                <FaRegBell size={25} />
+              </Badge>
+            </Link>
+          </div>
+        ))}
+
       {/* Profile Section */}
       <div
         style={{
@@ -96,7 +100,11 @@ const Header = () => {
       >
         <img
           src={
-            profile?.user?.profile
+            profile?.profile
+              ? profile?.profile?.startsWith("https")
+                ? profile?.profile
+                : `${import.meta.env.VITE_BASE_URL}${profile?.profile}`
+              : profile?.user?.profile
               ? profile?.user?.profile?.startsWith("https")
                 ? profile?.user?.profile
                 : `${import.meta.env.VITE_BASE_URL}${profile?.user?.profile}`
@@ -113,9 +121,9 @@ const Header = () => {
               fontWeight: "600",
             }}
           >
-            {profile?.user?.name || "Guest"}
+            {profile?.user?.name || profile?.name || "Guest"}
           </h2>
-          <p className="text-sm">{profile?.user?.role}</p>
+          <p className="text-sm">{profile?.user?.role || profile?.role}</p>
         </div>
       </div>
     </div>

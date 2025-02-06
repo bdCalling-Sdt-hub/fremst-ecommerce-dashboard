@@ -232,7 +232,7 @@ const EmployeeProfile = () => {
             </div>
             <h1 className="text-lg text-gray-600">Total Budget</h1>
             <h1 className="text-2xl font-bold">
-              ${employeeData?.totalBudget} <Currency />
+              {employeeData?.totalBudget} <Currency />
             </h1>
           </div>
           <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
@@ -241,7 +241,7 @@ const EmployeeProfile = () => {
             </div>
             <h1 className="text-lg text-gray-600">Total Spend</h1>
             <h1 className="text-2xl font-bold">
-              ${employeeData?.totalSpentBudget}
+              {employeeData?.totalSpentBudget} <Currency />
             </h1>
           </div>
           <div className="flex flex-col hover:shadow-xl px-8 rounded-2xl shadow-md py-6 gap-3 items-center">

@@ -12,14 +12,16 @@ import {
 import { Link } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import { IoMdAdd } from "react-icons/io";
-import { FaEye } from "react-icons/fa6";
+import { FaEye, FaTrash } from "react-icons/fa6";
 import randomImg from "../../assets/randomProfile2.jpg";
 import {
   useGetAllCompaniesQuery,
   useCreateCompanyMutation,
   useUpdateCompanyMutation,
+  useDeleteUserMutation,
 } from "../../redux/apiSlices/userSlice";
 import toast from "react-hot-toast";
+import Currency from "../../utils/Currency";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -34,6 +36,8 @@ const Users = () => {
   const [updateCompany] = useUpdateCompanyMutation();
 
   const { data: allCompanies, isFetching } = useGetAllCompaniesQuery();
+  const [deleteCompany] = useDeleteUserMutation();
+
   if (isFetching || loading) {
     return <div>Loading...</div>;
   }
@@ -136,6 +140,19 @@ const Users = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteCompany(id).unwrap();
+      if (response?.success) {
+        toast.success(response?.message || "Company deleted successfully");
+      } else {
+        toast.error(response?.message);
+      }
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to delete company");
+    }
+  };
+
   const handleCancel = () => {
     setIsModalVisible(false);
     setFileList([]);
@@ -183,6 +200,11 @@ const Users = () => {
       title: "Total Budget",
       dataIndex: "totalBudget",
       key: "totalBudget",
+      render: (text) => (
+        <p>
+          {text} <Currency />
+        </p>
+      ),
     },
     {
       title: "Total Order",
@@ -193,7 +215,11 @@ const Users = () => {
       title: "Total Spent Budget",
       dataIndex: "totalSpentBudget",
       key: "totalSpentBudget",
-      render: (text) => <p>${text}</p>,
+      render: (text) => (
+        <p>
+          {text} <Currency />
+        </p>
+      ),
     },
     {
       title: "Actions",
@@ -211,6 +237,13 @@ const Users = () => {
               <FaEye size={24} />
             </Button>
           </Link>
+
+          <Button
+            onClick={() => handleDelete(record?.user?._id)}
+            className="bg-red-600 text-white border-none"
+          >
+            <FaTrash size={24} />
+          </Button>
         </Space>
       ),
     },

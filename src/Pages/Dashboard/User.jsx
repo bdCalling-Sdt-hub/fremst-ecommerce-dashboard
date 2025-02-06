@@ -14,6 +14,7 @@ import {
   useGetEmployeesByCompanyQuery,
 } from "../../redux/apiSlices/userSlice";
 import moment from "moment";
+import Currency from "../../utils/Currency";
 
 const User = () => {
   const { id } = useParams();
@@ -64,13 +65,21 @@ const User = () => {
       title: "Budget",
       dataIndex: "budget",
       key: "budget",
-      render: (text) => <p>${text}</p>,
+      render: (text) => (
+        <p>
+          {text} <Currency />
+        </p>
+      ),
     },
     {
       title: "Budget Left",
       dataIndex: "budgetLeft",
       key: "budgetLeft",
-      render: (text) => <p>${text?.toFixed(2)}</p>,
+      render: (text) => (
+        <p>
+          {text?.toFixed(2)} <Currency />
+        </p>
+      ),
     },
     {
       title: "Expire On",
@@ -148,7 +157,7 @@ const User = () => {
               </div>
               <h1 className="text-lg text-gray-600">Total Budget</h1>
               <h1 className="text-2xl font-bold">
-                {companyData?.totalBudget || 0}
+                {companyData?.totalBudget || 0} <Currency />
               </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
@@ -157,7 +166,7 @@ const User = () => {
               </div>
               <h1 className="text-lg text-gray-600">Total Spend</h1>
               <h1 className="text-2xl font-bold">
-                {companyData?.totalSpend || 0}
+                {companyData?.totalSpend || 0} <Currency />
               </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-8 rounded-2xl shadow-md py-6 gap-3 items-center">
@@ -166,7 +175,7 @@ const User = () => {
               </div>
               <h1 className="text-lg text-gray-600">Remaining Budget</h1>
               <h1 className="text-2xl font-bold">
-                {companyData?.remainingBudget || 0}
+                {companyData?.remainingBudget || 0} <Currency />
               </h1>
             </div>
           </div>

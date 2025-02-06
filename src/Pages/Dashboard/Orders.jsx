@@ -1,8 +1,21 @@
 import React, { useState } from "react";
-import { Table, Button, Input, Select, Space, Modal, Tag, Descriptions } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Select,
+  Space,
+  Modal,
+  Tag,
+  Descriptions,
+} from "antd";
 import { EyeOutlined } from "@ant-design/icons";
-import { useOrdersQuery, useOrderStatusChangeMutation } from "../../redux/apiSlices/orderSlice";
+import {
+  useOrdersQuery,
+  useOrderStatusChangeMutation,
+} from "../../redux/apiSlices/orderSlice";
 import toast from "react-hot-toast";
+import Currency from "../../utils/Currency";
 
 const { Option } = Select;
 
@@ -11,8 +24,9 @@ const RunningOrders = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [updateStatus, { isLoading: isUpdating }] = useOrderStatusChangeMutation();
-  const { data, isLoading } = useOrdersQuery();
+  const [updateStatus, { isLoading: isUpdating }] =
+    useOrderStatusChangeMutation();
+  const { data, isLoading, refetch } = useOrdersQuery();
 
   // Ensure orders data is properly extracted
   const orders = data?.data?.data || [];
@@ -29,7 +43,9 @@ const RunningOrders = () => {
   const filteredData = orders.filter(
     (item) =>
       item.name.toLowerCase().includes(searchText.toLowerCase()) &&
-      (statusFilter ? item.status.toLowerCase() === statusFilter.toLowerCase() : true)
+      (statusFilter
+        ? item.status.toLowerCase() === statusFilter.toLowerCase()
+        : true)
   );
 
   const showModal = (order) => {
@@ -45,10 +61,14 @@ const RunningOrders = () => {
     setIsModalVisible(false);
   };
 
-  const handleStatusChange = (status) => {
+  const handleStatusChange = async (status) => {
     try {
-      updateStatus({ id: selectedOrder._id, status: status.toLowerCase() });
+      await updateStatus({
+        id: selectedOrder._id,
+        status: status.toLowerCase(),
+      });
       toast.success(`Status changed to ${status}`);
+      refetch();
     } catch (error) {
       toast.error(error?.data?.message);
     }
@@ -85,7 +105,8 @@ const RunningOrders = () => {
       render: (items) =>
         items.map((item, index) => (
           <div key={index}>
-            <strong>{item.product.name}</strong> ({item.size}, {item.color}) - {item.quantity} pcs
+            <strong>{item.product.name}</strong> ({item.size}, {item.color}) -{" "}
+            {item.quantity} pcs
           </div>
         )),
     },
@@ -93,7 +114,11 @@ const RunningOrders = () => {
       title: "Total Amount",
       dataIndex: "totalAmount",
       key: "totalAmount",
-      render: (amount) => `$${amount}`,
+      render: (amount) => (
+        <span>
+          {amount} <Currency />
+        </span>
+      ),
       sorter: (a, b) => a.totalAmount - b.totalAmount,
     },
     {
@@ -171,8 +196,12 @@ const RunningOrders = () => {
         rowKey="_id"
         loading={isLoading}
       />
-           <Modal
-        title={<span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Order Details</span>}
+      <Modal
+        title={
+          <span style={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+            Order Details
+          </span>
+        }
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
@@ -181,21 +210,31 @@ const RunningOrders = () => {
       >
         {selectedOrder && (
           <Descriptions bordered column={1} size="middle">
-            <Descriptions.Item label="Order ID">{selectedOrder?.orderId}</Descriptions.Item>
-            <Descriptions.Item label="Customer Name">{selectedOrder?.name}</Descriptions.Item>
+            <Descriptions.Item label="Order ID">
+              {selectedOrder?.orderId}
+            </Descriptions.Item>
+            <Descriptions.Item label="Customer Name">
+              {selectedOrder?.name}
+            </Descriptions.Item>
             <Descriptions.Item label="Company">
               {selectedOrder?.company?.user?.name || "N/A"}
             </Descriptions.Item>
-            <Descriptions.Item label="Contact">{selectedOrder?.contact}</Descriptions.Item>
+            <Descriptions.Item label="Contact">
+              {selectedOrder?.contact}
+            </Descriptions.Item>
             <Descriptions.Item label="Items">
               {selectedOrder?.items?.map((item, index) => (
                 <div key={index} style={{ marginBottom: 4 }}>
-                  <strong>{item.product.name}</strong> ({item.size}, {item.color}) - {item.quantity} pcs
+                  <strong>{item.product.name}</strong> ({item.size},{" "}
+                  {item.color}) - {item.quantity} pcs
                 </div>
               ))}
             </Descriptions.Item>
-            <Descriptions.Item label="Total Amount" style={{ fontWeight: 'bold', color: '#1890ff' }}>
-              ${selectedOrder?.totalAmount}
+            <Descriptions.Item
+              label="Total Amount"
+              style={{ fontWeight: "bold", color: "#1890ff" }}
+            >
+              {selectedOrder?.totalAmount} <Currency />
             </Descriptions.Item>
             <Descriptions.Item label="Status">
               <Tag
@@ -217,8 +256,11 @@ const RunningOrders = () => {
             </Descriptions.Item>
           </Descriptions>
         )}
-         <div style={{ textAlign: "center", marginTop: 20 }}>
-          <Button  className="bg-green-400    text-black" onClick={() => handleStatusChange("Completed")}>
+        <div style={{ textAlign: "center", marginTop: 20 }}>
+          <Button
+            className="bg-green-400    text-black"
+            onClick={() => handleStatusChange("Completed")}
+          >
             Mark as Completed
           </Button>
           <Button

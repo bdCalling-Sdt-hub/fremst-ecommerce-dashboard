@@ -136,6 +136,16 @@ const userSlice = api.injectEndpoints({
       },
       invalidatesTags: ["Employee"],
     }),
+
+    deleteUser: builder.mutation({
+      query: (id) => {
+        return {
+          method: "DELETE",
+          url: `/user/${id}`,
+        };
+      },
+      invalidatesTags: ["Employee", "Company"],
+    }),
   }),
 });
 
@@ -154,4 +164,5 @@ export const {
   useGetEmployeesForCompanyQuery,
   useCreateEmployeeMutation,
   useUpdateEmployeeMutation,
+  useDeleteUserMutation,
 } = userSlice;

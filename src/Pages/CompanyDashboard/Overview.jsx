@@ -14,7 +14,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { BiLeftArrowAlt } from "react-icons/bi";
 import { MdOutlineEmail, MdOutlineLocalPhone } from "react-icons/md";
-import { FaEye, FaInbox, FaLocationDot } from "react-icons/fa6";
+import { FaEye, FaInbox, FaLocationDot, FaTrash } from "react-icons/fa6";
 import { IoIosCalculator } from "react-icons/io";
 import { TbShoppingCartCheck } from "react-icons/tb";
 import { RiMoneyCnyCircleLine } from "react-icons/ri";
@@ -22,6 +22,7 @@ import { GiMoneyStack } from "react-icons/gi";
 import SalesTrackingChart from "../../components/ui/Home/SalesTrackingChart";
 import {
   useCreateEmployeeMutation,
+  useDeleteUserMutation,
   useGetCompanyProfileQuery,
   useGetEmployeesForCompanyQuery,
   useUpdateEmployeeMutation,
@@ -50,8 +51,9 @@ const Overview = () => {
 
   const [createEmployee] = useCreateEmployeeMutation();
   const [updateEmployee] = useUpdateEmployeeMutation();
+  const [deleteEmployee] = useDeleteUserMutation();
 
-  if (isFetching) {
+  if (isFetching || isEmployeesFetching) {
     return <div>Loading...</div>;
   }
 
@@ -150,6 +152,16 @@ const Overview = () => {
     form.resetFields();
   };
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteEmployee(id).unwrap();
+      toast.success(
+        response?.data?.message || "Employee deleted successfully!"
+      );
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to delete employee!");
+    }
+  };
   const filteredEmployees = employeesData.filter((employee) =>
     employee?.user?.name.toLowerCase().includes(searchText.toLowerCase())
   );
@@ -242,6 +254,14 @@ const Overview = () => {
             className="bg-primary text-white border-none"
           >
             <CiEdit size={24} />
+          </Button>
+          <Button
+            onClick={() => {
+              handleDelete(record?.user?._id);
+            }}
+            className="bg-red-600 text-white border-none"
+          >
+            <FaTrash size={24} />
           </Button>
         </Space>
       ),
@@ -405,6 +425,10 @@ const Overview = () => {
                   label="Password"
                   rules={[
                     { required: true, message: "Please enter a password" },
+                    {
+                      min: 8,
+                      message: "Password must be at least 8 characters",
+                    },
                   ]}
                 >
                   <Input.Password placeholder="Enter Password" />
