@@ -48,7 +48,7 @@ const CompanyOrderPage = () => {
   // Filtered data based on search and status
   const filteredData = orders.filter(
     (item) =>
-      item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+      item?.name.toLowerCase().includes(searchText.toLowerCase()) &&
       (statusFilter
         ? item.status.toLowerCase() === statusFilter.toLowerCase()
         : true)
@@ -107,7 +107,7 @@ const CompanyOrderPage = () => {
       render: (items) =>
         items.map((item, index) => (
           <div key={index}>
-            <strong>{item.product.name}</strong> ({item.size}, {item.color}) -{" "}
+            <strong>{item.product?.name}</strong> ({item.size}, {item.color}) -{" "}
             {item.quantity} pcs
           </div>
         )),
@@ -223,7 +223,7 @@ const CompanyOrderPage = () => {
             <Descriptions.Item label="Items">
               {selectedOrder?.items?.map((item, index) => (
                 <div key={index} style={{ marginBottom: 4 }}>
-                  <strong>{item.product.name}</strong> ({item.size},{" "}
+                  <strong>{item.product?.name}</strong> ({item.size},{" "}
                   {item.color}) - {item.quantity} pcs
                 </div>
               ))}
