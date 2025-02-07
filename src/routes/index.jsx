@@ -49,6 +49,7 @@ import AddSubCategory from "../Pages/Dashboard/category/AddSubCategory";
 import Overview from "../Pages/CompanyDashboard/Overview";
 import AddOrEditProduct from "../Pages/Dashboard/Product/AddOrEditProduct";
 import CompanyOrderPage from "../Pages/Dashboard/CompanyOrderPage";
+import Tags from "../Pages/Dashboard/Tags";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <Users />,
+      },
+      {
+        path: "/tags",
+        element: <Tags />,
       },
       {
         path: "/company/details/:id",

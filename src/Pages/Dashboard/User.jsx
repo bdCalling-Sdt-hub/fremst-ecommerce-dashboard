@@ -15,6 +15,7 @@ import {
 } from "../../redux/apiSlices/userSlice";
 import moment from "moment";
 import Currency from "../../utils/Currency";
+import logo from "../../assets/logo.png";
 
 const User = () => {
   const { id } = useParams();
@@ -25,13 +26,17 @@ const User = () => {
     useGetEmployeesByCompanyQuery(id);
 
   if (isFetching || isEmployeesFetching) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={logo} alt="" />
+      </div>
+    );
   }
 
   const companyData = companyById?.data || {};
   const employeesData = companyEmployees?.data?.data || [];
 
-  console.log(employeesData);
+  console.log(companyData);
 
   const imgUrl =
     companyData?.user?.profile ||
@@ -148,7 +153,7 @@ const User = () => {
               </div>
               <h1 className="text-lg text-gray-600">Total Order</h1>
               <h1 className="text-2xl font-bold">
-                {companyData?.totalOrder || 0}
+                {companyData?.totalOrders || 0}
               </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
@@ -181,7 +186,7 @@ const User = () => {
           </div>
           <div className="bg-white p-5 my-5 rounded-xl shadow-lg">
             <h1 className="text-2xl font-bold ms-7 my-1">Total Orders</h1>
-            <SalesTrackingChart />
+            <SalesTrackingChart companyId={companyData?._id} />
           </div>
         </div>
       </div>

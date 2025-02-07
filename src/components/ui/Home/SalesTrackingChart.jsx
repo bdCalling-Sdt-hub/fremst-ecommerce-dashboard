@@ -12,20 +12,37 @@ import { useGetOrderStatsForUserQuery } from "../../../redux/apiSlices/orderSlic
 
 // Define month names for mapping
 const MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
-const SalesTrackingChart = ({ id }) => {
+const SalesTrackingChart = ({ companyId }) => {
+  console.log("companyId", companyId);
+
   const [year, setYear] = React.useState(2025);
-  const { data: stats, isLoading } = useGetOrderStatsForUserQuery(year, id && id);
+  const { data: stats, isLoading } = useGetOrderStatsForUserQuery({
+    year,
+    companyId,
+  });
 
   // Transform API data into recharts-friendly format
   const chartData = MONTHS.map((month, index) => {
-    const monthData = stats?.data?.monthlyStats?.find((m) => m.month === index + 1) || { totalOrders: 0 };
+    const monthData = stats?.data?.monthlyStats?.find(
+      (m) => m.month === index + 1
+    ) || { totalAmount: 0 };
     return {
       name: month,
-      TotalOrders: monthData.totalOrders,
+      totalAmount: monthData.totalAmount,
     };
   });
 
@@ -45,7 +62,7 @@ const SalesTrackingChart = ({ id }) => {
         <YAxis />
         <Tooltip />
         <Bar
-          dataKey="TotalOrders"
+          dataKey="totalAmount"
           stackId="a"
           fill="#292c61"
           radius={[8, 8, 0, 0]}

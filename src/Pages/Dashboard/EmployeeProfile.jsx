@@ -21,6 +21,7 @@ import { useGetSingleEmployeeByIdQuery } from "../../redux/apiSlices/userSlice";
 import { useParams } from "react-router-dom";
 import { useGetEmployeeOrdersHistoryQuery } from "../../redux/apiSlices/orderSlice";
 import Currency from "../../utils/Currency";
+import logo from "../../assets/logo.png";
 
 const EmployeeProfile = () => {
   const [searchText, setSearchText] = useState("");
@@ -33,7 +34,11 @@ const EmployeeProfile = () => {
     useGetEmployeeOrdersHistoryQuery(id);
 
   if (isFetching || isFetchingOrders) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={logo} alt="" />
+      </div>
+    );
   }
 
   const employeeData = getEmployeeData?.data || [];
@@ -199,7 +204,7 @@ const EmployeeProfile = () => {
             <h1 className="text-lg">
               Assigned Budget:{" "}
               <span>
-                {employeeData?.totalBudget} <Currency />
+                {employeeData?.budget} <Currency />
               </span>
             </h1>
             <h1 className="text-lg">
@@ -232,7 +237,7 @@ const EmployeeProfile = () => {
             </div>
             <h1 className="text-lg text-gray-600">Total Budget</h1>
             <h1 className="text-2xl font-bold">
-              {employeeData?.totalBudget} <Currency />
+              {employeeData?.budget} <Currency />
             </h1>
           </div>
           <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">

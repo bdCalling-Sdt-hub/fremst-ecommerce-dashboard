@@ -16,6 +16,7 @@ import {
 } from "../../redux/apiSlices/orderSlice";
 import toast from "react-hot-toast";
 import Currency from "../../utils/Currency";
+import logo from "../../assets/logo.png";
 
 const { Option } = Select;
 
@@ -29,6 +30,13 @@ const RunningOrders = () => {
   const { data, isLoading, refetch } = useOrdersQuery();
 
   // Ensure orders data is properly extracted
+
+  if (isLoading) {
+    <div className="flex min-h-screen items-center justify-center">
+      <Image src={logo} alt="logo" />
+    </div>;
+  }
+
   const orders = data?.data?.data || [];
 
   const handleSearch = (e) => {
@@ -190,12 +198,7 @@ const RunningOrders = () => {
           </Select>
         </Space>
       </div>
-      <Table
-        columns={columns}
-        dataSource={filteredData}
-        rowKey="_id"
-        loading={isLoading}
-      />
+      <Table columns={columns} dataSource={filteredData} rowKey="_id" />
       <Modal
         title={
           <span style={{ fontSize: "1.5rem", fontWeight: "bold" }}>

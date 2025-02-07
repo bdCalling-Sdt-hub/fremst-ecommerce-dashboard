@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import logo from "../../assets/logoTransBg.png";
 import { FaBorderStyle, FaThList } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
+import { FaTags } from "react-icons/fa6";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -44,6 +45,11 @@ const Sidebar = () => {
       key: "/users",
       icon: <TbUserScreen size={24} />,
       label: <Link to="/users">Customers</Link>,
+    },
+    {
+      key: "/tags",
+      icon: <FaTags size={24} />,
+      label: <Link to="/tags">Tags</Link>,
     },
     {
       key: "productMenu",

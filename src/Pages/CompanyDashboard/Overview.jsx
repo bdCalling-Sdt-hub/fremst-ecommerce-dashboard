@@ -30,6 +30,7 @@ import {
 import toast from "react-hot-toast";
 import { CiEdit } from "react-icons/ci";
 import Currency from "../../utils/Currency";
+import logo from "../../assets/logo.png";
 
 const Overview = () => {
   const [searchText, setSearchText] = useState("");
@@ -54,7 +55,11 @@ const Overview = () => {
   const [deleteEmployee] = useDeleteUserMutation();
 
   if (isFetching || isEmployeesFetching) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={logo} alt="" />
+      </div>
+    );
   }
 
   const companyData = company?.data || {};
@@ -149,6 +154,7 @@ const Overview = () => {
     }
 
     setIsModalOpen(false);
+    setEditItem(null);
     form.resetFields();
   };
 

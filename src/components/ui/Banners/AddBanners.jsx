@@ -5,6 +5,7 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useAddBannerMutation } from "../../../redux/apiSlices/banenrSlice";
 import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
+import logo from "../../../assets/logo.png";
 
 const AddBanners = () => {
   const [imgURL, setImgURL] = useState();
@@ -18,7 +19,7 @@ const AddBanners = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <h1>Loading...</h1>
+        <img src={logo} alt="" />
       </div>
     );
   }

@@ -11,7 +11,7 @@ import {
 } from "../../../redux/apiSlices/authSlice";
 import logo from "../../../assets/randomProfile2.jpg";
 import toast from "react-hot-toast";
-import rentMeLogo from "../../../assets/logo.png";
+import logo2 from "../../../assets/logo.png";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -89,7 +89,11 @@ const PersonalInfo = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={logo2} alt="" />
+      </div>
+    );
   }
 
   const onFinishFailed = (errorInfo) => {

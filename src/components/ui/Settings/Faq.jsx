@@ -11,6 +11,7 @@ import {
   useUpdateFaqMutation,
 } from "../../../redux/apiSlices/privacyPolicySlice";
 import toast from "react-hot-toast";
+import logo from "../../../assets/logo.png";
 
 const Faq = () => {
   const [openAddModel, setOpenAddModel] = useState(false);
@@ -22,11 +23,10 @@ const Faq = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <h1>Loading...</h1>
+        <img src={logo} alt="" />
       </div>
     );
   }
-
   const faqData = getFaqData?.data || [];
   console.log(faqData);
 

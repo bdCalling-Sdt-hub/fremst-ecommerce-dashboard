@@ -6,6 +6,7 @@ import {
   useReadNotificationMutation,
 } from "../../redux/apiSlices/notificationSlice";
 import moment from "moment";
+import logo from "../../assets/logo.png";
 
 const notificationsData = [
   {
@@ -80,11 +81,10 @@ const Notifications = () => {
 
   const { data: notifications, isLoading } = useNotificationQuery();
   const [readNotification] = useReadNotificationMutation();
-
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <h1>Loading...</h1>
+        <img src={logo} alt="" />
       </div>
     );
   }
@@ -110,9 +110,6 @@ const Notifications = () => {
     <div>
       <div className="flex items-center justify-between mb-4">
         <Title className="text-[22px]">All Notifications</Title>
-        <button className="bg-[#5c2579cc] text-white h-10 px-4 rounded-md">
-          Read All
-        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-5 bg-white p-4 rounded-lg">

@@ -22,6 +22,7 @@ import {
 } from "../../redux/apiSlices/userSlice";
 import toast from "react-hot-toast";
 import Currency from "../../utils/Currency";
+import logo from "../../assets/logo.png";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -39,11 +40,15 @@ const Users = () => {
   const [deleteCompany] = useDeleteUserMutation();
 
   if (isFetching || loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={logo} alt="" />
+      </div>
+    );
   }
 
   const companies = allCompanies?.data?.data;
-  console.log(companies);
+  // console.log(companies);
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
@@ -116,24 +121,19 @@ const Users = () => {
           id: currentCompany._id,
           data: formData,
         }).unwrap();
-        if (response?.success) {
-          toast.success(response?.message || "Company updated successfully");
-          setIsModalVisible(false);
-          form.resetFields();
-        } else {
-          toast.error(response?.message);
-        }
+        toast.success(
+          response?.data?.message || "Company updated successfully"
+        );
+        setIsModalVisible(false);
+        form.resetFields();
       } else {
         const response = await createCompany(formData).unwrap();
-        if (response?.success) {
-          toast.success(response?.message || "Company added successfully");
-          setIsModalVisible(false);
-          form.resetFields();
-        } else {
-          toast.error(response?.message);
-        }
+        toast.success(response?.data?.message || "Company added successfully");
+        setIsModalVisible(false);
+        form.resetFields();
       }
     } catch (error) {
+      toast.error(error?.data?.message || "Failed to add company");
       console.error("Error handling form submission:", error);
     } finally {
       setLoading(false); // Disable loading state

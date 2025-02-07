@@ -30,11 +30,13 @@ const orderSlice = api.injectEndpoints({
       invalidatesTags: ["Order"],
     }),
     getOrderStatsForUser: builder.query({
-      query: (status, id) => {
+      query: ({ year, companyId }) => {
+        console.log("in slice companyId", companyId);
+
         return {
           method: "GET",
-          url: `order/stats/${status}/${
-            id && "companyId" in id ? id.companyId : ""
+          url: `order/stats/${year}?${
+            companyId ? "companyId=" + companyId : ""
           }`,
         };
       },

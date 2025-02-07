@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Badge, Select } from "antd";
 import logo from "../../assets/randomProfile2.jpg";
-
+import logo2 from "../../assets/logo.png";
 import { useFetchUserProfileQuery } from "../../redux/apiSlices/authSlice";
 import { io } from "socket.io-client";
 const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -24,7 +24,7 @@ const Header = () => {
   const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
-    const socket = io("http://10.0.80.49:5010", {
+    const socket = io("http://164.90.205.5:5001", {
       query: {
         token: localStorage.getItem("authToken"),
       },
@@ -39,7 +39,13 @@ const Header = () => {
     };
   }, []);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <img src={logo2} alt="" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-end gap-7 h-full">
@@ -75,16 +81,15 @@ const Header = () => {
         </Option>
       </Select> */}
 
-      {profile?.role === "admin" ||
-        (profile?.role === "super-admin" && (
-          <div>
-            <Link to="/notification">
-              <Badge count={notificationCount} color="red">
-                <FaRegBell size={25} />
-              </Badge>
-            </Link>
-          </div>
-        ))}
+      {profile?.role === "admin" || profile?.role === "super-admin" ? (
+        <div>
+          <Link to="/notification">
+            <Badge count={notificationCount} color="red">
+              <FaRegBell size={25} />
+            </Badge>
+          </Link>
+        </div>
+      ) : null}
 
       {/* Profile Section */}
       <div
