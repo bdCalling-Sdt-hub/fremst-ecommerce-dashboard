@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import { ConfigProvider, Input, Table, Button, Space } from "antd";
+import { Input, Table, Button, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
-import { BiLeftArrowAlt } from "react-icons/bi";
 import { MdOutlineEmail, MdOutlineLocalPhone } from "react-icons/md";
-import { FaEye, FaLocationDot } from "react-icons/fa6";
+import { FaEye, FaLocationDot, FaUsers } from "react-icons/fa6";
 import { IoIosCalculator } from "react-icons/io";
 import { TbShoppingCartCheck } from "react-icons/tb";
-import { RiMoneyCnyCircleLine } from "react-icons/ri";
 import { GiMoneyStack } from "react-icons/gi";
 import SalesTrackingChart from "../../components/ui/Home/SalesTrackingChart";
 import {
@@ -157,6 +155,15 @@ const User = () => {
               </h1>
             </div>
             <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
+              <div className="p-6 rounded-2xl bg-[#edf6fd]">
+                <FaUsers size={40} />
+              </div>
+              <h1 className="text-lg text-gray-600">Total Employee</h1>
+              <h1 className="text-2xl font-bold">
+                {companyData?.totalEmployees || 0}
+              </h1>
+            </div>
+            <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
               <div className="p-6 rounded-2xl bg-[#fff6da]">
                 <IoIosCalculator size={40} />
               </div>
@@ -165,22 +172,13 @@ const User = () => {
                 {companyData?.totalBudget || 0} <Currency />
               </h1>
             </div>
-            <div className="flex flex-col hover:shadow-xl px-10 rounded-2xl shadow-md py-6 gap-3 items-center">
-              <div className="p-6 rounded-2xl bg-[#edf6fd]">
-                <RiMoneyCnyCircleLine size={40} />
-              </div>
-              <h1 className="text-lg text-gray-600">Total Spend</h1>
-              <h1 className="text-2xl font-bold">
-                {companyData?.totalSpend || 0} <Currency />
-              </h1>
-            </div>
             <div className="flex flex-col hover:shadow-xl px-8 rounded-2xl shadow-md py-6 gap-3 items-center">
               <div className="p-6 rounded-2xl bg-[#fce7e7]">
                 <GiMoneyStack size={40} />
               </div>
-              <h1 className="text-lg text-gray-600">Remaining Budget</h1>
+              <h1 className="text-lg text-gray-600">Total Spent Budget</h1>
               <h1 className="text-2xl font-bold">
-                {companyData?.remainingBudget || 0} <Currency />
+                {companyData?.totalSpentBudget || 0} <Currency />
               </h1>
             </div>
           </div>
