@@ -140,17 +140,28 @@ const Users = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await deleteCompany(id).unwrap();
-      if (response?.success) {
-        toast.success(response?.message || "Company deleted successfully");
-      } else {
-        toast.error(response?.message);
-      }
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to delete company");
-    }
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: "Are you sure?",
+      content:
+        "Do you really want to delete this company? This action cannot be undone.",
+      okText: "Yes, Delete",
+      cancelText: "Cancel",
+      okType: "danger",
+      centered: true,
+      onOk: async () => {
+        try {
+          const response = await deleteCompany(id).unwrap();
+          if (response?.success) {
+            toast.success(response?.message || "Company deleted successfully");
+          } else {
+            toast.error(response?.message);
+          }
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to delete company");
+        }
+      },
+    });
   };
 
   const handleCancel = () => {
@@ -217,7 +228,7 @@ const Users = () => {
       key: "totalSpentBudget",
       render: (text) => (
         <p>
-          {text} <Currency />
+          {text?.toFixed(2)} <Currency />
         </p>
       ),
     },

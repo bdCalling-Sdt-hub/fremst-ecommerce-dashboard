@@ -159,14 +159,25 @@ const Overview = () => {
   };
 
   const handleDelete = async (id) => {
-    try {
-      const response = await deleteEmployee(id).unwrap();
-      toast.success(
-        response?.data?.message || "Employee deleted successfully!"
-      );
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to delete employee!");
-    }
+    Modal.confirm({
+      title: "Are you sure?",
+      content:
+        "Do you really want to delete this employee? This action cannot be undone.",
+      okText: "Yes, Delete",
+      cancelText: "Cancel",
+      okType: "danger",
+      centered: true,
+      onOk: async () => {
+        try {
+          const response = await deleteEmployee(id).unwrap();
+          toast.success(
+            response?.data?.message || "Employee deleted successfully!"
+          );
+        } catch (error) {
+          toast.error(error?.data?.message || "Failed to delete employee!");
+        }
+      },
+    });
   };
   const filteredEmployees = employeesData.filter((employee) =>
     employee?.user?.name.toLowerCase().includes(searchText.toLowerCase())
