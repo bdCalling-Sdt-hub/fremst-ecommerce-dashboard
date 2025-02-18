@@ -23,6 +23,8 @@ import {
 import toast from "react-hot-toast";
 import Currency from "../../utils/Currency";
 import logo from "../../assets/logo.png";
+import { FaAssistiveListeningSystems } from "react-icons/fa";
+import { IoSettings } from "react-icons/io5";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -255,6 +257,12 @@ const Users = () => {
           >
             <FaTrash size={24} />
           </Button>
+
+          <Link to={`/company/manage-prices/${record._id}`}>
+            <Button className="bg-primary text-white border-none">
+              <IoSettings size={24} />
+            </Button>
+          </Link>
         </Space>
       ),
     },

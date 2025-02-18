@@ -46,11 +46,7 @@ const Sidebar = () => {
       icon: <TbUserScreen size={24} />,
       label: <Link to="/users">Customers</Link>,
     },
-    {
-      key: "/tags",
-      icon: <FaTags size={24} />,
-      label: <Link to="/tags">Tags</Link>,
-    },
+
     {
       key: "productMenu",
       icon: <AiFillProduct size={24} />,

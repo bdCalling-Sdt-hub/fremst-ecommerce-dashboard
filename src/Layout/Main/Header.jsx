@@ -6,6 +6,7 @@ import logo from "../../assets/randomProfile2.jpg";
 import logo2 from "../../assets/logo.png";
 import { useFetchUserProfileQuery } from "../../redux/apiSlices/authSlice";
 import { io } from "socket.io-client";
+import LanguageToggle from "../../components/LanguageToggle";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const { Option } = Select;
@@ -40,11 +41,7 @@ const Header = () => {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <img src={logo2} alt="" />
-      </div>
-    );
+    return <h1>Loading...</h1>;
   }
 
   return (
@@ -80,6 +77,8 @@ const Header = () => {
           </div>
         </Option>
       </Select> */}
+
+      <LanguageToggle />
 
       {profile?.role === "admin" || profile?.role === "super-admin" ? (
         <div>

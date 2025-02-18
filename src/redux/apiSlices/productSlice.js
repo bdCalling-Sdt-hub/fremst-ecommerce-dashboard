@@ -9,7 +9,7 @@ const productSlice = api.injectEndpoints({
           url: "/product",
         };
       },
-      providesTags: ["Product"], 
+      providesTags: ["Product"],
     }),
     getCategories: builder.query({
       query: () => {
@@ -62,18 +62,20 @@ const productSlice = api.injectEndpoints({
       invalidatesTags: ["Product"],
     }),
     updateProduct: builder.mutation({
-        query: ({ id, data }) => {
-          return {
-            method: "PATCH",
-            url: `/product/${id}`,
-            body: data, // This should be FormData
-            headers: () => ({
-              Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
-            }),
-          };
-        },
-        invalidatesTags: ["Product"],
-      }),
+      query: ({ id, data }) => {
+        return {
+          method: "PATCH",
+          url: `/product/${id}`,
+          body: data, // This should be FormData
+          headers: () => ({
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          }),
+        };
+      },
+      invalidatesTags: ["Product"],
+    }),
     deleteProduct: builder.mutation({
       query: (id) => {
         return {
@@ -88,7 +90,50 @@ const productSlice = api.injectEndpoints({
       },
       invalidatesTags: ["Product"],
     }),
+
+    //product availability and price update
+    updateProductAvailability: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          method: "PATCH",
+          url: `/admin/manage-product-availability/${id}`,
+          body: data,
+          headers: () => ({
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          }),
+        };
+      },
+      invalidatesTags: ["Product"],
+    }),
+
+    updateProductPrice: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          method: "PATCH",
+          url: `/admin/manage-product-price/${id}`,
+          body: data,
+          headers: () => ({
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          }),
+        };
+      },
+      invalidatesTags: ["Product"],
+    }),
   }),
 });
 
-export const { useGetProductsQuery, useGetCategoriesQuery, useCreateProductMutation, useUpdateProductMutation , useDeleteProductMutation , useGetProductsByCategoryQuery, useGetSingleProductQuery } = productSlice;
+export const {
+  useGetProductsQuery,
+  useGetCategoriesQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+  useGetProductsByCategoryQuery,
+  useGetSingleProductQuery,
+  useUpdateProductAvailabilityMutation,
+  useUpdateProductPriceMutation,
+} = productSlice;

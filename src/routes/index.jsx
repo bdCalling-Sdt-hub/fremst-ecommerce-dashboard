@@ -49,7 +49,7 @@ import AddSubCategory from "../Pages/Dashboard/category/AddSubCategory";
 import Overview from "../Pages/CompanyDashboard/Overview";
 import AddOrEditProduct from "../Pages/Dashboard/Product/AddOrEditProduct";
 import CompanyOrderPage from "../Pages/Dashboard/CompanyOrderPage";
-import Tags from "../Pages/Dashboard/Tags";
+import ManageSingleCompanyPrices from "../Pages/Dashboard/ManageSingleCompanyPrices";
 
 const router = createBrowserRouter([
   {
@@ -65,10 +65,7 @@ const router = createBrowserRouter([
         path: "/users",
         element: <Users />,
       },
-      {
-        path: "/tags",
-        element: <Tags />,
-      },
+
       {
         path: "/company/details/:id",
         element: <User />,
@@ -77,7 +74,10 @@ const router = createBrowserRouter([
         path: "/employee/details/:id",
         element: <EmployeeProfile />,
       },
-
+      {
+        path: "/company/manage-prices/:id",
+        element: <ManageSingleCompanyPrices />,
+      },
       {
         path: "/addSubCategory",
         element: <AddSubCategory />,

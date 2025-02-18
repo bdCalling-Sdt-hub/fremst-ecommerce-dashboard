@@ -1,5 +1,5 @@
 import i18next from "i18next";
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { I18nextProvider } from "react-i18next";
 import App from "./App.jsx";
@@ -10,27 +10,12 @@ import { Provider } from "react-redux";
 import store from "./redux/store.js";
 import { Toaster } from "react-hot-toast";
 
-i18next.init({
-  interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
-  },
-  lng: "en",
-  resources: {
-    en: {
-      // Use "en" instead of "english"
-      global: global_en,
-    },
-    es: {
-      // Use "es" instead of "spanish"
-      global: global_es,
-    },
-  },
-});
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <I18nextProvider i18n={i18next}>
       <Provider store={store}>
+        {/* <LanguageSwitcher /> */}
+        <div id="google_translate_element" style={{ display: "none" }}></div>
         <App />
         <Toaster />
       </Provider>

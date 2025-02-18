@@ -117,3 +117,20 @@
 .ant-switch-checked {
   background-color: #292c61 !important;
 }
+
+/* Hide the Google Translate bar */
+#google_translate_element {
+  display: none !important;
+}
+
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-menu-value:hover {
+  background-color: transparent !important;
+}
+
+.goog-te-menu-value {
+  background-color: transparent !important;
+}
