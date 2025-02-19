@@ -17,7 +17,7 @@ const Header = () => {
 
   const profile = profileData?.data;
 
-  console.log(profile);
+  // console.log(profile);
 
   useEffect(() => {
     refetch();
