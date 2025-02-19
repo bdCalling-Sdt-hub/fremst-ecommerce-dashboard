@@ -14,6 +14,7 @@ import {
 import moment from "moment";
 import Currency from "../../utils/Currency";
 import logo from "../../assets/logo.png";
+import { imageUrl } from "../../redux/api/baseApi";
 
 const User = () => {
   const { id } = useParams();
@@ -117,11 +118,7 @@ const User = () => {
           <div className="p-5 rounded-xl shadow-md bg-white">
             <img
               className="w-80 h-80 mx-auto rounded-xl object-cover"
-              src={
-                imgUrl?.startsWith("http")
-                  ? imgUrl
-                  : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
-              }
+              src={imgUrl?.startsWith("http") ? imgUrl : `${imageUrl}${imgUrl}`}
               alt=""
             />
           </div>

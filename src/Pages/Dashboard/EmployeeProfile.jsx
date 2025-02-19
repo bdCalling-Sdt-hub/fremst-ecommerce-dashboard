@@ -22,6 +22,7 @@ import { useParams } from "react-router-dom";
 import { useGetEmployeeOrdersHistoryQuery } from "../../redux/apiSlices/orderSlice";
 import Currency from "../../utils/Currency";
 import logo from "../../assets/logo.png";
+import { imageUrl } from "../../redux/api/baseApi";
 
 const EmployeeProfile = () => {
   const [searchText, setSearchText] = useState("");
@@ -142,9 +143,7 @@ const EmployeeProfile = () => {
                 src={
                   employeeData?.user?.profile?.startsWith("https")
                     ? employeeData?.user?.profile
-                    : `${import.meta.env.VITE_BASE_URL}${
-                        employeeData?.user?.profile
-                      }`
+                    : `${imageUrl}${employeeData?.user?.profile}`
                 }
                 alt="profileImg"
                 width={200}

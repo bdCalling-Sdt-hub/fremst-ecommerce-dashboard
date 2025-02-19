@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Table, Button, Space, Avatar, Select } from "antd";
 import { Link } from "react-router-dom";
 import randomImg from "../../assets/randomProfile2.jpg";
+import { imageUrl } from "../../redux/api/baseApi";
 
 const Vendors = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -82,7 +83,7 @@ const Vendors = () => {
         const imgUrl = record.profileImg || randomImg;
         const fullImgUrl = imgUrl.startsWith("http")
           ? imgUrl
-          : `${import.meta.env.VITE_BASE_URL}${imgUrl}`;
+          : `${imageUrl}${imgUrl}`;
 
         return (
           <Space>

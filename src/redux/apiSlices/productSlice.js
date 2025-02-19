@@ -11,6 +11,16 @@ const productSlice = api.injectEndpoints({
       },
       providesTags: ["Product"],
     }),
+
+    getProductByCompany: builder.query({
+      query: (companyId) => {
+        return {
+          method: "GET",
+          url: `/product?company=${companyId}`,
+        };
+      },
+    }),
+
     getCategories: builder.query({
       query: () => {
         return {
@@ -128,6 +138,7 @@ const productSlice = api.injectEndpoints({
 
 export const {
   useGetProductsQuery,
+  useGetProductByCompanyQuery,
   useGetCategoriesQuery,
   useCreateProductMutation,
   useUpdateProductMutation,

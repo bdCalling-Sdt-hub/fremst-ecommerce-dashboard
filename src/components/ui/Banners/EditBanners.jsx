@@ -9,6 +9,7 @@ import whiteBg from "../../../assets/whiteBG.png";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import toast from "react-hot-toast";
 import logo from "../../../assets/logo.png";
+import { imageUrl } from "../../../redux/api/baseApi";
 
 const EditBanners = () => {
   const navigate = useNavigate();
@@ -24,8 +25,8 @@ const EditBanners = () => {
 
   useEffect(() => {
     if (bannerData?.imgUrl) {
-      setImgURL(`${import.meta.env.VITE_BASE_URL}${bannerData?.imgUrl}`);
-      setFile(`${import.meta.env.VITE_BASE_URL}${bannerData?.imgUrl}`);
+      setImgURL(`${imageUrl}${bannerData?.imgUrl}`);
+      setFile(`${imageUrl}${bannerData?.imgUrl}`);
     }
   }, [bannerData]);
 

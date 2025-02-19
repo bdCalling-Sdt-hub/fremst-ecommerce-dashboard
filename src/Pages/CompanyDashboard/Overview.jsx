@@ -31,6 +31,7 @@ import toast from "react-hot-toast";
 import { CiEdit } from "react-icons/ci";
 import Currency from "../../utils/Currency";
 import logo from "../../assets/logo.png";
+import { imageUrl } from "../../redux/api/baseApi";
 
 const Overview = () => {
   const [searchText, setSearchText] = useState("");
@@ -207,7 +208,7 @@ const Overview = () => {
           status: "done", // Status of the file
           url: record?.user?.profile?.startsWith("http")
             ? record?.user?.profile
-            : `${import.meta.env.VITE_BASE_URL}${record?.user?.profile}`,
+            : `${imageUrl}${record?.user?.profile}`,
         },
       ],
     });
@@ -292,11 +293,7 @@ const Overview = () => {
           <div className="p-5 rounded-xl shadow-md bg-white">
             <img
               className="w-80 h-80 mx-auto rounded-xl object-cover"
-              src={
-                imgUrl?.startsWith("http")
-                  ? imgUrl
-                  : `${import.meta.env.VITE_BASE_URL}${imgUrl}`
-              }
+              src={imgUrl?.startsWith("http") ? imgUrl : `${imageUrl}${imgUrl}`}
               alt=""
             />
           </div>

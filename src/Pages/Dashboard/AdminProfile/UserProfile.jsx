@@ -12,8 +12,7 @@ import {
 import logo from "../../../assets/randomProfile2.jpg";
 import toast from "react-hot-toast";
 import logo2 from "../../../assets/logo.png";
-
-const baseUrl = import.meta.env.VITE_BASE_URL;
+import { imageUrl } from "../../../redux/api/baseApi";
 
 const PersonalInfo = () => {
   const [contact, setContact] = useState("");
@@ -40,7 +39,9 @@ const PersonalInfo = () => {
         address: address,
         phone: phoneNumber,
       });
-      setImgURL(profile.startsWith("https") ? profile : `${baseUrl}${profile}`);
+      setImgURL(
+        profile.startsWith("https") ? profile : `${imageUrl}${profile}`
+      );
       setContact(phoneNumber);
     }
   }, [form, data]);

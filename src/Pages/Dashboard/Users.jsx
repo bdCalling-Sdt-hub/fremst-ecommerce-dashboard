@@ -25,6 +25,7 @@ import Currency from "../../utils/Currency";
 import logo from "../../assets/logo.png";
 import { FaAssistiveListeningSystems } from "react-icons/fa";
 import { IoSettings } from "react-icons/io5";
+import { imageUrl } from "../../redux/api/baseApi";
 
 const Users = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -76,7 +77,7 @@ const Users = () => {
       if (company.user.profile) {
         const logoUrl = company.user.profile.startsWith("https")
           ? company.user.profile
-          : `${import.meta.env.VITE_BASE_URL}${company.user.profile}`;
+          : `${imageUrl}${company.user.profile}`;
 
         setFileList([
           {
@@ -194,7 +195,7 @@ const Users = () => {
               record?.user?.profile
                 ? record?.user?.profile?.startsWith("https")
                   ? record?.user?.profile
-                  : `${import.meta.env.VITE_BASE_URL}${record?.user?.profile}`
+                  : `${imageUrl}${record?.user?.profile}`
                 : randomImg
             }
             alt={record.company}

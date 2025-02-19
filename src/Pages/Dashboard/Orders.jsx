@@ -71,12 +71,15 @@ const RunningOrders = () => {
 
   const handleStatusChange = async (status) => {
     try {
-      await updateStatus({
+      const res = await updateStatus({
         id: selectedOrder._id,
         status: status.toLowerCase(),
       });
-      toast.success(`Status changed to ${status}`);
-      refetch();
+      if (res?.success) {
+        toast.success(`Status changed to ${status}`);
+      } else {
+        toast.error("Something went wrong");
+      }
     } catch (error) {
       toast.error(error?.data?.message);
     }

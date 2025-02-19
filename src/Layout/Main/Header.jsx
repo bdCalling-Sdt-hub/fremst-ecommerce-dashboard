@@ -7,7 +7,8 @@ import logo2 from "../../assets/logo.png";
 import { useFetchUserProfileQuery } from "../../redux/apiSlices/authSlice";
 import { io } from "socket.io-client";
 import LanguageToggle from "../../components/LanguageToggle";
-const baseUrl = import.meta.env.VITE_BASE_URL;
+import { imageUrl } from "../../redux/api/baseApi";
+import LanguageSwitcher from "../../components/LanguageSwitcher";
 
 const { Option } = Select;
 
@@ -78,7 +79,7 @@ const Header = () => {
         </Option>
       </Select> */}
 
-      <LanguageToggle />
+      <LanguageSwitcher />
 
       {profile?.role === "admin" || profile?.role === "super-admin" ? (
         <div>
@@ -107,11 +108,11 @@ const Header = () => {
             profile?.profile
               ? profile?.profile?.startsWith("https")
                 ? profile?.profile
-                : `${import.meta.env.VITE_BASE_URL}${profile?.profile}`
+                : `${imageUrl}${profile?.profile}`
               : profile?.user?.profile
               ? profile?.user?.profile?.startsWith("https")
                 ? profile?.user?.profile
-                : `${import.meta.env.VITE_BASE_URL}${profile?.user?.profile}`
+                : `${imageUrl}${profile?.user?.profile}`
               : logo
           }
           alt={name || "User Profile"}

@@ -8,6 +8,7 @@ import {
   useUpdateCategoryMutation,
 } from "../../../redux/apiSlices/Category";
 import toast from "react-hot-toast";
+import { imageUrl } from "../../../redux/api/baseApi";
 
 const AddCategory = () => {
   const [fileList, setFileList] = useState([]);
@@ -118,11 +119,7 @@ const AddCategory = () => {
         <div className="bg-gray-200 w-24 h-24 flex items-center justify-center rounded-lg">
           <img
             className="rounded-xl object-cover w-full h-full"
-            src={
-              image?.startsWith("http")
-                ? image
-                : `${import.meta.env.VITE_BASE_URL}${image}`
-            }
+            src={image?.startsWith("http") ? image : `${imageUrl}${image}`}
             alt="category"
             style={{ width: 90, height: 90 }}
           />

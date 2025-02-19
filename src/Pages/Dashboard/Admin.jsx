@@ -8,8 +8,7 @@ import {
   useGetAllAdminsQuery,
 } from "../../redux/apiSlices/userSlice";
 import toast from "react-hot-toast";
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { imageUrl } from "../../redux/api/baseApi";
 
 const Admin = () => {
   const [open, setOpen] = useState(false);
@@ -64,7 +63,7 @@ const Admin = () => {
         console.log(
           record?.profile?.startsWith("http")
             ? record.profile
-            : `${BASE_URL}${record.profile}`
+            : `${imageUrl}${record.profile}`
         );
         return (
           <Space>
@@ -72,7 +71,7 @@ const Admin = () => {
               src={
                 record?.profile?.startsWith("http")
                   ? record.profile
-                  : `${BASE_URL}${record.profile}`
+                  : `${imageUrl}${record.profile}`
               }
               alt={record.name}
               style={{ width: 50, height: 50, borderRadius: "50%" }}
