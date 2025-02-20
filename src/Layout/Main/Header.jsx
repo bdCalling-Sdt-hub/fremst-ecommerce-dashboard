@@ -79,7 +79,7 @@ const Header = () => {
         </Option>
       </Select> */}
 
-      <LanguageSwitcher />
+      {/* <LanguageSwitcher /> */}
 
       {profile?.role === "admin" || profile?.role === "super-admin" ? (
         <div>
