@@ -3,12 +3,9 @@ import { Link } from "react-router-dom";
 import { FaRegBell } from "react-icons/fa6";
 import { Badge, Select } from "antd";
 import logo from "../../assets/randomProfile2.jpg";
-import logo2 from "../../assets/logo.png";
 import { useFetchUserProfileQuery } from "../../redux/apiSlices/authSlice";
 import { io } from "socket.io-client";
-import LanguageToggle from "../../components/LanguageToggle";
 import { imageUrl } from "../../redux/api/baseApi";
-import LanguageSwitcher from "../../components/LanguageSwitcher";
 
 const { Option } = Select;
 

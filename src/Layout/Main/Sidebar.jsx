@@ -6,6 +6,7 @@ import {
   MdCategory,
   MdFeaturedPlayList,
   MdOutlineAddBox,
+  MdOutlineProductionQuantityLimits,
 } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { TbUserScreen } from "react-icons/tb";
@@ -16,6 +17,7 @@ import logo from "../../assets/logoTransBg.png";
 import { FaBorderStyle, FaThList } from "react-icons/fa";
 import { AiFillProduct } from "react-icons/ai";
 import { FaTags } from "react-icons/fa6";
+import { BsBorderStyle } from "react-icons/bs";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -168,8 +170,14 @@ const Sidebar = () => {
       label: <Link to="/overview">Overview</Link>,
     },
     {
+      key: "/company-products",
+      icon: <MdOutlineProductionQuantityLimits size={24} />,
+      label: <Link to="/company-products">Products</Link>,
+    },
+
+    {
       key: "/company-orders",
-      icon: <MdFeaturedPlayList size={24} />,
+      icon: <BsBorderStyle size={24} />,
       label: <Link to="/company-orders">Orders</Link>,
     },
     {

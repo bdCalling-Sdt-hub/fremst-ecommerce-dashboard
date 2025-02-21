@@ -75,10 +75,11 @@ const RunningOrders = () => {
         id: selectedOrder._id,
         status: status.toLowerCase(),
       });
-      if (res?.success) {
-        toast.success(`Status changed to ${status}`);
+      console.log(res);
+      if (res?.data?.success) {
+        toast.success(res?.data?.message || `Status changed to ${status}`);
       } else {
-        toast.error("Something went wrong");
+        toast.error(res?.error?.data?.message || "Something went wrong");
       }
     } catch (error) {
       toast.error(error?.data?.message);

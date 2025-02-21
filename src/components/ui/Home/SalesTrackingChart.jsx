@@ -27,7 +27,7 @@ const MONTHS = [
 ];
 
 const SalesTrackingChart = ({ companyId }) => {
-  console.log("companyId", companyId);
+  // console.log("companyId", companyId);
 
   const [year, setYear] = React.useState(2025);
   const { data: stats, isLoading } = useGetOrderStatsForUserQuery({

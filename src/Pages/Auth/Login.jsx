@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [rememberMe, setRememberMe] = useState(false); // Track checkbox state
+  const [rememberMe, setRememberMe] = useState(false);
 
   const [login] = useLoginMutation();
 
@@ -32,7 +32,12 @@ const Login = () => {
         Cookies.set("refreshToken", refreshToken);
       }
 
-      navigate("/");
+      if (role === "admin" || role === "super-admin") {
+        navigate("/users");
+      } else {
+        navigate("/overview");
+      }
+
       toast.success("Login successful!");
     } catch (error) {
       toast.error(error || "An error occurred", {
@@ -46,7 +51,7 @@ const Login = () => {
   };
 
   const onCheckboxChange = (e) => {
-    setRememberMe(e.target.checked); // Update checkbox state
+    setRememberMe(e.target.checked);
   };
 
   return (
@@ -59,7 +64,7 @@ const Login = () => {
         onFinish={onFinish}
         layout="vertical"
         initialValues={{
-          remember: false, // Default state for the checkbox
+          remember: false,
         }}
       >
         {/* Email Field */}

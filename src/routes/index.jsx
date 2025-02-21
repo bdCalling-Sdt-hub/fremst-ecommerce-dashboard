@@ -28,6 +28,7 @@ import Overview from "../Pages/CompanyDashboard/Overview";
 import AddOrEditProduct from "../Pages/Dashboard/Product/AddOrEditProduct";
 import CompanyOrderPage from "../Pages/Dashboard/CompanyOrderPage";
 import ManageSingleCompanyPrices from "../Pages/Dashboard/ManageSingleCompanyPrices";
+import CompanyProduct from "../Pages/Dashboard/CompanyProduct";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: "/overview",
         element: <Overview />,
+      },
+      {
+        path: "/company-products",
+        element: <CompanyProduct />,
       },
 
       {
