@@ -7,7 +7,7 @@ import {
   useUpdateProductPriceMutation,
 } from "../../redux/apiSlices/productSlice";
 import logo from "../../assets/logo.png";
-import { Table, Input, Checkbox, Button, Tabs } from "antd";
+import { Table, Input, Checkbox, Button, Tabs, Spin } from "antd";
 import { useGetCompanyByIdQuery } from "../../redux/apiSlices/userSlice";
 import toast from "react-hot-toast";
 
@@ -115,7 +115,7 @@ const ManageSingleCompanyPrices = () => {
   if (isLoading || isSingleCompanyLoading || isCompanyProductLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img className="w-20 h-10" src={logo} alt="Loading" />
+        <Spin />
       </div>
     );
   }

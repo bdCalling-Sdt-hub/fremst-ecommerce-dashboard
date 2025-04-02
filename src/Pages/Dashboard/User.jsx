@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, Table, Button, Space } from "antd";
+import { Input, Table, Button, Space, Spin } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { MdOutlineEmail, MdOutlineLocalPhone } from "react-icons/md";
 import { FaEye, FaLocationDot, FaUsers } from "react-icons/fa6";
@@ -27,7 +27,7 @@ const User = () => {
   if (isFetching || isEmployeesFetching) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={logo} alt="" />
+        <Spin />
       </div>
     );
   }

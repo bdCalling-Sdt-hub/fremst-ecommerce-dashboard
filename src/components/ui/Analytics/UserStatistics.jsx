@@ -1,3 +1,4 @@
+import { Spin } from "antd";
 import logo from "../../../assets/logo.png";
 
 import React, { useState } from "react";
@@ -34,7 +35,7 @@ const UserStatistics = () => {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={logo} alt="" />
+        <Spin />
       </div>
     );
   }

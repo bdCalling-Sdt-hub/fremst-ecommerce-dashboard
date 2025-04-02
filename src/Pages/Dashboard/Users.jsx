@@ -8,6 +8,7 @@ import {
   Form,
   Upload,
   Tooltip,
+  Spin,
 } from "antd";
 import { Link } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
@@ -45,7 +46,7 @@ const Users = () => {
   if (isFetching || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <img src={logo} alt="" />
+        <Spin />
       </div>
     );
   }
